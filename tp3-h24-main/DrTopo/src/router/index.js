@@ -10,7 +10,7 @@ import SignIn from "../views/SignIn.vue";
 import SignUpView from "../views/SignUpView.vue";
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/',
       name: '/IndexView',
@@ -67,25 +67,7 @@ const router = createRouter({
       component: SignUpView
     },
     { path: '/:notFound(.*)', component: NotFound }
-  ],
-
-  // scrollBehavior() permet de scroller au bon endroit lors d'une redirection
-  // Cette fonction prend 3 paramètres :
-  // to : objet contenant les informations de la route cible
-  // from : objet contenant les informations de la route source
-  // savedPosition : sauvegarde la position de la page quand on utilise le bouton précédent ou suivant du navigateur
-  scrollBehavior(to, from, savedPosition) {
-    console.log('savedPosition', savedPosition)
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Si savedPosition existe, on scroll à la position sauvegardée
-        if (savedPosition) {
-          resolve(savedPosition)
-        }
-        resolve({ left: 0, top: 0 })
-      }, 500)
-    })
-  }
+  ]
 })
 
 export default router
