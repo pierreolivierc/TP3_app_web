@@ -1,14 +1,19 @@
 <template>
-  <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-    <router-link to="/articles" class="me-3 py-2 " >
-      Articles
-    </router-link>
-    <!-- exemple route nommée -->
-    <router-link :to="{ name: 'About' }" class="me-3 py-2 " >
-      À propos
-    </router-link>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <router-link to="/" class="me-3 py-2 ">IndexView</router-link>
+      </li>
+      <li class="nav-item">
+        <router-link to="/areas" class="me-3 py-2 ">AreasView</router-link>
+      </li>
+    </ul>
   </nav>
 </template>
+
+<script>
+import 'bootstrap/dist/css/bootstrap.css';
+</script>
 
 <style scoped>
 /* Ces deux classes sont automatiquement ajoutées au liens par le systeme de routage */
