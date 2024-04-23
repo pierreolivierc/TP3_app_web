@@ -1,24 +1,70 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import AreaFormView from "../views/AreaFormView.vue";
+import AreasView from "../views/AreasView.vue";
+import AreaView from "../views/AreaView.vue";
+import IndexView from "../views/IndexView.vue";
+import ProfileView from "../views/ProfileView.vue";
+import RouteFormView from "../views/RouteFormView.vue";
+import RouteView from "../views/RouteView.vue";
+import SignIn from "../views/SignIn.vue";
+import SignUpView from "../views/SignUpView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', redirect: '/articles' },
-    {
-      path: '/articles',
-      name: 'Articles',
-      component: Articles
+    { path: '/',
+      name: '/IndexView',
+      component: IndexView
     },
     {
-      path: '/about',
-      name: 'About',
-      component: () => import('../views/About.vue') // <== le code de ce composant
-      // ne sera chargé qu'au moment où la route sera visitée pour la première fois,
+      path: '/areas/new',
+      name: 'AreaFormView',
+      component: AreaFormView
     },
     {
-      path: '/articles/:id',
-      name: 'ArticleSingle',
-      component: ArticleSingle
+      path: '/areas/:id/edi',
+      name: 'AreaFormView',
+      component: AreaFormView
+    },
+    {
+      path: '/areas',
+      name: 'AreasView',
+      component: AreasView
+    },
+    {
+      path: '/areas/:id',
+      name: 'AreaView',
+      component: AreaView
+    },
+    {
+      path: '/profile',
+      name: 'ProfileView',
+      component: ProfileView
+    },
+    {
+      path: '/routes/new',
+      name: 'RouteFormView',
+      component: RouteFormView
+    },
+    {
+      path: '/routes/:id/edit',
+      name: 'RouteFormView',
+      component: RouteFormView
+    },
+    {
+      path: '/routes/:id ',
+      name: 'RouteView',
+      component: RouteView
+    },
+    {
+      path: '/signin',
+      name: 'SignIn',
+      component: SignIn
+    },
+    {
+      path: '/signup',
+      name: 'SignUpView',
+      component: SignUpView
     },
     { path: '/:notFound(.*)', component: NotFound }
   ],
