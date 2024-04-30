@@ -3,7 +3,7 @@
     <h1 class="mt-5 mb-4">Se connecter</h1>
     <form @submit.prevent="handleSubmit">
       <div class="mb-3">
-        <label for="username" class="form-label">Nom d'utilisateur ou Email</label>
+        <label for="username" class="form-label">Adresse courriel</label>
         <input type="text" class="form-control" id="username" v-model="username" required>
       </div>
       <div class="mb-3">
