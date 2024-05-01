@@ -4,23 +4,27 @@
     <form @submit.prevent="submitForm">
       <div class="mb-3">
         <label for="username" class="form-label">Nom d'utilisateur</label>
-        <input type="text" class="form-control" id="username" v-model="username" required :class="{ 'is-invalid': nameError }">
-        <span class="invalid-feedback" v-if="nameError">{{ nameError }}</span>
+        <input type="text" class="form-control" id="username" v-model="username" required
+               :class="{ 'is-invalid': nameError }">
+        <div class="invalid-feedback" v-if="nameError">{{ nameError }}</div>
       </div>
       <div class="mb-3">
         <label for="email" class="form-label">Adresse courriel</label>
-        <input type="email" class="form-control" id="email" v-model="email" required :class="{ 'is-invalid': emailError }">
-        <span class="error" v-if="emailError">{{ emailError }}</span>
+        <input type="email" class="form-control" id="email" v-model="email" required
+               :class="{ 'is-invalid': emailError }">
+        <div class="invalid-feedback" v-if="emailError">{{ emailError }}</div>
       </div>
       <div class="mb-3">
         <label for="password" class="form-label">Mot de passe</label>
-        <input type="password" class="form-control" id="password" v-model="password" required :class="{ 'is-invalid': passwordError }">
-        <span class="invalid-feedback" v-if="passwordError">{{ passwordError }}</span>
+        <input type="password" class="form-control" id="password" v-model="password" required
+               :class="{ 'is-invalid': passwordError }">
+        <div class="invalid-feedback" v-if="passwordError">{{ passwordError }}</div>
       </div>
       <div class="mb-3">
         <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
-        <input type="password" class="form-control" id="confirmPassword" v-model="confirmPassword" required :class="{ 'is-invalid': passwordError }">
-        <span class="invalid-feedback" v-if="passwordError">{{ passwordError }}</span>
+        <input type="password" class="form-control" id="confirmPassword" v-model="confirmPassword" required
+               :class="{ 'is-invalid': passwordError }">
+        <div class="invalid-feedback" v-if="passwordError">{{ passwordError }}</div>
       </div>
       <button type="submit" class="btn btn-primary">Créer un compte</button>
     </form>
@@ -53,8 +57,8 @@ export default {
       if (!this.username) {
         this.nameError = "Veuillez entrer votre nom d'utilisateur";
         isValid = false;
-      } else if ((this.username.length < 3) && (this.username.length > 50)) {
-        this.nameError = "Le nom d'utilisateur d'utilisateur doit être entre 3 et 50 caractères";
+      } else if (this.username.length < 3 || this.username.length > 50) {
+        this.nameError = "Le nom d'utilisateur doit être entre 3 et 50 caractères";
         isValid = false;
       }
 
@@ -64,16 +68,16 @@ export default {
       } else if (!this.isValidEmail(this.email)) {
         this.emailError = "Veuillez entrer une adresse courriel valide";
         isValid = false;
-      } else if(this.username.length > 50){
+      } else if (this.username.length > 50) {
         this.emailError = "Le courriel ne devrait pas dépasser 50 caractères";
         isValid = false;
       }
 
       if (this.password !== this.confirmPassword) {
-        this.passwordError('Les mots de passe ne correspondent pas');
+        this.passwordError = 'Les mots de passe ne correspondent pas';
         isValid = false;
-      } else if(this.password.length < 6) {
-        this.passwordError('Les mots de passes doit d\'être au moins 6 charactère');
+      } else if (this.password.length < 6) {
+        this.passwordError = 'Les mots de passe doivent comporter au moins 6 caractères';
         isValid = false;
       }
 
@@ -93,8 +97,3 @@ export default {
 };
 </script>
 
-<style>
-.error {
-  color: red;
-}
-</style>
