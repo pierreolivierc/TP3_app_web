@@ -4,6 +4,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 var hateoasLinker = require("express-hateoas-links");
 
+
+const port = 3000;
+
 const app = express();
 
 // parse application/json
@@ -38,12 +41,14 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const areaRoutes = require("./routes/area");
 const routeRoutes = require("./routes/route");
+const dbRoutes = require("./routes/db");
 
 // Utilisation des routes en tant que middleware
 app.use(authRoutes);
 app.use(userRoutes);
 app.use(areaRoutes);
 app.use(routeRoutes);
+app.use(dbRoutes);
 
 // Gestion des erreurs
 // "Attrappe" les erreurs envoyé par "throw"
@@ -58,13 +63,20 @@ app.use(function (err, req, res, next) {
 });	
 
 
+// mongoose
+// 	.connect(process.env.DATA_BASE)
+// 	.then(() => {
+// 		app.listen(3000, () => {
+// 			console.log("Node.js est à l'écoute sur http://localhost:%s ", process.env.PORT);
+// 		});
+// 	})
+// 	.catch(err => console.log(err));
+
 mongoose
-	.connect(process.env.DATA_BASE)
+	.connect("mongodb://127.0.0.1:27017/DrTopo")
 	.then(() => {
-		app.listen(3000, () => {
-			console.log("Node.js est à l'écoute sur http://localhost:%s ", process.env.PORT);
-		});
-	})
-	.catch(err => console.log(err));
+		app.listen(port);
+		console.log("Serveur à l'écoute sur : http://localhost:" + port);
+	});
 
 module.exports = app;
