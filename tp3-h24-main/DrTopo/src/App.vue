@@ -2,19 +2,16 @@
   <div>
     <nav-bar />
     <router-view />
-    <app-footer />
   </div>
 </template>
 
 <script>
 import NavBar from './components/NavBar.vue'
-import AppFooter from "@/components/Footer.vue"; // Renommer Footer en AppFooter
 
 export default {
   name: 'App',
   components: {
-    NavBar,
-    AppFooter // Utiliser le composant renommé ici
+    NavBar
   },
   data () {
     return {
