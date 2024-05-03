@@ -9,7 +9,7 @@ dotenv.config();
 const url_base = process.env.URL + ":" + process.env.PORT;
 
 exports.createUser = (req, res, next) => {
-    const {username, email, password, passwordConfirmation} = req.body
+    const {username, email, password} = req.body
 
     const user = new User({
         username: username,
