@@ -5,7 +5,7 @@ const area = [
         "gettingThere": "Pour accéder à la falaise, suivre le sentier balisé à partir du parking situé à la lisière de la forêt. Environ 20 minutes de marche.",
         "lon": 1.234567,
         "lat": 2.345678,
-        "routes": [],
+        "routes": ["Voie de la Cascade","Voie du Crépuscule","Voie de l'Aigle","Voie de la Lune","Voie de l'Oiseau"],
         "user": "user1@gmail.com"
     },
     {
@@ -14,7 +14,7 @@ const area = [
         "gettingThere": "Pour rejoindre la grotte, suivez le sentier escarpé en direction de la vallée. Attention aux rochers glissants par temps humide.",
         "lon": 3.456789,
         "lat": 4.567890,
-        "routes": [],
+        "routes": ["Voie du Griffon", "Voie de la Chimère","Voie de la Sirène","Voie de la Licorne","Voie de l'Aurore"],
         "user": "user1@gmail.com"
     },
     {
@@ -23,7 +23,7 @@ const area = [
         "gettingThere": "L'accès au mur se fait depuis le parking situé à proximité de l'entrée de la carrière. Suivez le sentier qui serpente à travers les arbres jusqu'au pied du mur.",
         "lon": 5.678901,
         "lat": 6.789012,
-        "routes": [],
+        "routes": ["Voie du Loup", "Voie de la Tortue","Voie de la Tortue","Voie du Dragon","Voie de la Foudre"],
         "user": "user2@gmail.com"
     },
     {
@@ -32,7 +32,7 @@ const area = [
         "gettingThere": "La montée jusqu'au rocher nécessite une courte mais intense ascension depuis le sentier de montagne. Attention au vent fort sur la crête.",
         "lon": 7.890123,
         "lat": 8.901234,
-        "routes": [],
+        "routes": ["Voie du Serpent","Voie de la Licorne","Voie de l'Ours","Voie de la Cascade","Voie de l'Aube"],
         "user": "user2@gmail.com"
     }
 ]
