@@ -14,9 +14,9 @@ exports.seed = (req, res, next) =>{
 
     User.deleteMany({})
         .then(() => User.insertMany(user_seeds))
-        .then(() => Area.deleteMany(area_seeds))
+        .then(() => Area.deleteMany({}))
         .then(() => Area.insertMany(area_seeds))
-        .then(() => Route.deleteMany(route_seeds))
+        .then(() => Route.deleteMany({}))
         .then(() => Route.insertMany(route_seeds))
         .then(() => {
             res.send("Base de données réinitialisée avec succès !");
