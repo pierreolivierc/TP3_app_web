@@ -73,6 +73,7 @@ export default {
         isValid = false;
       }
 
+
       if (this.password !== this.confirmPassword) {
         this.passwordError = 'Les mots de passe ne correspondent pas';
         isValid = false;
