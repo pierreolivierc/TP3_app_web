@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <!-- Partie du haut -->
@@ -65,9 +66,8 @@
       <div class="row">
         <div class="col-md-12">
           <h2>Résultats</h2>
-          <table class="table">
+          <table class="table table-striped">
             <tbody>
-              <!-- Insérez vos données fictives ici -->
               <tr>
                 <td><a href="">Voie de la Cascade</a></td>
                 <td><a href="">Voie de l'Aube</a></td>
@@ -98,5 +98,4 @@ export default {
 </script>
 
 <style scoped>
-/* Ajoutez vos styles personnalisés ici */
 </style>
