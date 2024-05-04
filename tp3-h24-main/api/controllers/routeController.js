@@ -38,8 +38,14 @@ exports.createRoute = async (req, res, next) => {
 
 
 exports.getRoutes = async (req, res, next) => {
+    Route.find()
+        .then(routes => {
 
-
+            res.status(200).json(routes)
+        })
+        .catch(err => {
+            next(err)
+        })
 };
 
 exports.getUserRoutes = async (req, res, next) => {
@@ -48,7 +54,19 @@ exports.getUserRoutes = async (req, res, next) => {
 };
 
 exports.getRoute = async (req, res, next) => {
-
+    const routeId = req.params.id
+    Route.findById(routeId)
+        .then(route => {
+            if (!route) {
+                const error = new Error('La route n\'existe pas.')
+                error.statusCode = 404
+                throw error
+            }
+            res.status(200).json(route)
+        })
+        .catch(err => {
+            next(err)
+        })
 
 };
 
