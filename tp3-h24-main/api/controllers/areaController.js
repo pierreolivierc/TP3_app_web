@@ -32,7 +32,7 @@ exports.createArea = async (req, res, next) => {
 
 
 exports.getAreas = async (req, res, next) => {
-     Area.find()
+    Area.find()
         .then(areas => {
 
             res.status(200).json(areas)
@@ -43,12 +43,23 @@ exports.getAreas = async (req, res, next) => {
 };
 
 exports.getUserAreas = async (req, res, next) => {
-
-
+const userId = req.params.id
+    Area.find({userId : userId})
+        .then(userArea => {
+            if (userArea.length === 0) {
+                const error = new Error('Aucun lieu trouvé pour cette utilisateur.')
+                error.statusCode = 404
+                throw error
+            }
+            res.status(200).json(userArea)
+        })
+        .catch(err => {
+            next(err)
+        })
 };
 
 exports.getArea = async (req, res, next) => {
-const areaId = req.params.id
+    const areaId = req.params.id
     Area.findById(areaId)
         .then(area => {
             if (!area) {
@@ -65,12 +76,12 @@ const areaId = req.params.id
 };
 
 exports.updateArea = async (req, res, next) => {
- const areaId = req.params.id
+    const areaId = req.params.id
     const {name, description, gettingThere, lon, lat} = req.body
     User.findById(areaId)
         .then(area => {
             if (!area) {
-                return res.status(404).json({ message: "L'utilisateur n'existe pas." })
+                return res.status(404).json({message: "L'utilisateur n'existe pas."})
             }
             area.name = name
             area.description = description
@@ -89,7 +100,17 @@ exports.updateArea = async (req, res, next) => {
 }
 
 exports.deleteArea = async (req, res, next) => {
-
+    const areaId = req.params.id
+    Area.findById(areaId)
+        .then(route => {
+            return Route.findByIdAndDelete(areaId)
+        })
+        .then(() => {
+            res.status(204).send()
+        })
+        .catch(err => {
+            next(err)
+        })
 
 }
 

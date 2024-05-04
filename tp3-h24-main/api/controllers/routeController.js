@@ -3,6 +3,7 @@
 const Route = require("../models/route");
 const dotenv = require("dotenv");
 const User = require("../models/user");
+const Area = require("../models/area");
 
 dotenv.config();
 
@@ -49,7 +50,19 @@ exports.getRoutes = async (req, res, next) => {
 };
 
 exports.getUserRoutes = async (req, res, next) => {
-
+const userId = req.params.id
+    Route.find({userId : userId})
+        .then(userRoute => {
+            if (userRoute.length === 0) {
+                const error = new Error('Aucune voie trouvé pour cette utilisateur.')
+                error.statusCode = 404
+                throw error
+            }
+            res.status(200).json(userRoute)
+        })
+        .catch(err => {
+            next(err)
+        })
 
 };
 
@@ -73,10 +86,10 @@ exports.getRoute = async (req, res, next) => {
 exports.updateRoute = async (req, res, next) => {
     const routeId = req.params.id
     const {name, type, grade, description, approach, descent, areaId, userId} = req.body;
-    User.findById(routeId)
+    Route.findById(routeId)
         .then(route => {
             if (!route) {
-                return res.status(404).json({ message: "L'utilisateur n'existe pas." })
+                return res.status(404).json({message: "L'utilisateur n'existe pas."})
             }
             route.name = name
             route.type = type
@@ -98,7 +111,17 @@ exports.updateRoute = async (req, res, next) => {
 }
 
 exports.deleteRoute = async (req, res, next) => {
-
+    const routeId = req.params.id
+    Route.findById(routeId)
+        .then(route => {
+            return Route.findByIdAndDelete(routeId)
+        })
+        .then(() => {
+            res.status(204).send()
+        })
+        .catch(err => {
+            next(err)
+        })
 }
 
 
