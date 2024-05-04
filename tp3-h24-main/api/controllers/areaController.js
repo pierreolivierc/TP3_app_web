@@ -115,8 +115,19 @@ exports.deleteArea = async (req, res, next) => {
 }
 
 exports.getRoutes = async (req, res, next) => {
-
-
+    const areaId = req.params.id
+    Route.find({areaId : areaId})
+        .then(routeArea => {
+            if (routeArea.length === 0) {
+                const error = new Error('Aucune voie trouvé pour ce lieu.')
+                error.statusCode = 404
+                throw error
+            }
+            res.status(200).json(routeArea)
+        })
+        .catch(err => {
+            next(err)
+        })
 };
 
 
