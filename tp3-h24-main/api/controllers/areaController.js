@@ -12,14 +12,14 @@ const url_base = process.env.URL + ":" + process.env.PORT;
 exports.createArea = async (req, res, next) => {
     const {name, description, gettingThere, lon, lat} = req.body
 
-    const user = new User({
+    const area = new Area({
         name: name,
         description: description,
         gettingThere: gettingThere,
         lon: lon,
         lat: lat
     })
-    user.save()
+    area.save()
         .then(result => {
             res.location("/areas/" + result._id)
             // Retourne le résultat au format JSON
@@ -65,7 +65,26 @@ const areaId = req.params.id
 };
 
 exports.updateArea = async (req, res, next) => {
-
+ const areaId = req.params.id
+    const {name, description, gettingThere, lon, lat} = req.body
+    User.findById(areaId)
+        .then(area => {
+            if (!area) {
+                return res.status(404).json({ message: "L'utilisateur n'existe pas." })
+            }
+            area.name = name
+            area.description = description
+            area.gettingThere = gettingThere
+            area.lon = lon
+            area.lat = lat
+            return area.save()
+        })
+        .then(updatedArea => {
+            res.status(200).json(updatedArea)
+        })
+        .catch(err => {
+            next(err)
+        })
 
 }
 

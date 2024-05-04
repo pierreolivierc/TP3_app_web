@@ -71,7 +71,29 @@ exports.getRoute = async (req, res, next) => {
 };
 
 exports.updateRoute = async (req, res, next) => {
-
+    const routeId = req.params.id
+    const {name, type, grade, description, approach, descent, areaId, userId} = req.body;
+    User.findById(routeId)
+        .then(route => {
+            if (!route) {
+                return res.status(404).json({ message: "L'utilisateur n'existe pas." })
+            }
+            route.name = name
+            route.type = type
+            route.grade = grade
+            route.description = description
+            route.approach = approach
+            route.descent = descent
+            route.area = areaId
+            route.user = userId
+            return route.save()
+        })
+        .then(updatedRoute => {
+            res.status(200).json(updatedRoute)
+        })
+        .catch(err => {
+            next(err)
+        })
 
 }
 
