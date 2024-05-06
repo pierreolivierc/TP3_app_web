@@ -86,8 +86,31 @@ export default {
     },
     submitForm() {
       if (this.validateForm()) {
-        // Handle form submission
-        console.log("Formulaire envoyé");
+        fetch('http://localhost:3000/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: this.username,
+            email: this.email,
+            password: this.password
+          })
+        })
+            .then(response => {
+              if (response.ok) {
+                return response.json()
+              } else {
+                throw new Error('Impossible de se connecter')
+              }
+            })
+            .then(data => {
+              localStorage.setItem('jwt', data.jwt)
+              this.$router.push('/')
+            })
+            .catch(error => {
+              this.errorMessage = error.message
+            })
       }
     },
     isValidEmail(email) {
