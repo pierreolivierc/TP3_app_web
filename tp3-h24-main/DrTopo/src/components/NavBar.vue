@@ -23,7 +23,7 @@
         </li>
         <li>
           <router-link v-show="isLogged"  to="/profile" class="nav-link me-3 py-2" :class="{ 'active': $route.path === '/profile' }">
-            Profil
+            {{ username }}
           </router-link>
         </li>
         <li>
@@ -40,42 +40,45 @@
 
 <script>
 import 'bootstrap/dist/css/bootstrap.css';
-// import { jwtDecode  } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 export default {
   data() {
     return {
       isLogged: false,
-      user: {}
+      username: ""
     }
   },
   watch: {
     '$route' () {
       this.isLogged = localStorage.getItem('jwt') !== null
-      // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
-      // if (token) {
-      //   const decoded = jwtDecode(token);
-      //   this.user = decoded.user;
-      // } else {
-      //   this.user = {};
-      // }
+      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+      if (token) {
+        const decoded = jwtDecode(token);
+        console.log(decoded.username)
+        // this.username = decoded.username;
+      } else {
+        this.username = "";
+      }
     }
   },
   created() {
     this.isLogged = localStorage.getItem('jwt') !== null
-    // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
-    // if (token) {
-    //   const decoded = jwtDecode(token);
-    //   this.user = decoded.user;
-    // }
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+    if (token) {
+      const decoded = jwtDecode(token);
+      console.log(decoded.username)
+      // this.username = decoded.username;
+    }
   },
   methods: {
     logout() {
       localStorage.removeItem('jwt')
       this.isLogged = false
-      this.user = {};
+      this.username = "";
       this.$router.push({ name: 'Home' })
     }
   }
 }
 </script>
+
