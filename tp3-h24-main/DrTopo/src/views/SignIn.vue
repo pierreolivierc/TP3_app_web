@@ -50,7 +50,8 @@ export default {
             }
           })
           .then(data => {
-            localStorage.setItem('jwt', data.jwt)
+            localStorage.setItem('jwt', data)
+            console.log(data)
             this.$router.push('/')
           })
           .catch(error => {
