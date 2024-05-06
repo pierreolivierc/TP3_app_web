@@ -17,13 +17,13 @@ router.get("/routes/", routeController.getRoutes);
 router.get("/routes/my-routes", routeController.getUserRoutes);
 
 // /routes/:routeId => GET
-router.get("/routes/:routeId", routeController.getRoute);
+router.get("/routes/:id", routeController.getRoute);
 
 // /routes/:routeId => PUT
-router.put("/routes/:routeId",  routeController.updateRoute);
+router.put("/routes/:id",  routeController.updateRoute);
 
 // /routes/:routeId => DELETE
-router.delete("/routes/:routeId",  routeController.deleteRoute);
+router.delete("/routes/:id",  routeController.deleteRoute);
 
 module.exports = router;
 

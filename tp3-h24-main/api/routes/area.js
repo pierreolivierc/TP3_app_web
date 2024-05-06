@@ -17,17 +17,17 @@ router.get("/areas/", areaController.getAreas);
 router.get("/areas/my-areas", areaController.getAreas);
 
 // /areas/:areaId => GET
-router.get("/areas/:areaId", areaController.getArea);
+router.get("/areas/:id", areaController.getArea);
 
 // /areas/:areaId/routes => GET
-router.get("/areas/:areaId/routes", areaController.getRoutes);
+router.get("/areas/:id/routes", areaController.getRoutes);
 
 
 // /areas/:areaId => PUT
-router.put("/areas/:areaId", areaController.updateArea);
+router.put("/areas/:id", areaController.updateArea);
 
 // /areas/:areaId => DELETE
-router.delete("/areas/:areaId", areaController.deleteArea);
+router.delete("/areas/:id", areaController.deleteArea);
 
 module.exports = router;
 

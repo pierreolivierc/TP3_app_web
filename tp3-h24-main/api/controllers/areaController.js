@@ -59,21 +59,25 @@ const userId = req.params.id
 };
 
 exports.getArea = async (req, res, next) => {
-    const areaId = req.params.id
+    const areaId = req.params.id;
     Area.findById(areaId)
+        .populate({
+            path : "routes",
+            model : Route,
+        })
         .then(area => {
             if (!area) {
-                const error = new Error('L\'utilisateur n\'existe pas.')
-                error.statusCode = 404
-                throw error
+                const error = new Error('Le lieu n\'existe pas.');
+                error.statusCode = 404;
+                throw error;
             }
-            res.status(200).json(area)
+            res.status(200).json(area);
         })
         .catch(err => {
-            next(err)
-        })
-
+            next(err);
+        });
 };
+
 
 exports.updateArea = async (req, res, next) => {
     const areaId = req.params.id

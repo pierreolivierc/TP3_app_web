@@ -8,7 +8,7 @@
             <!-- Utilisation de v-for pour parcourir les areas -->
             <tr v-for="area in areas" :key="area._id">
               <!-- Affichage du nom de l'area -->
-              <td><a :href="`/area/${area._id}`">{{ area.name }}</a></td>
+              <td><a :href="`/areas/${area._id}`">{{ area.name }}</a></td>
               <!-- Affichage du nombre de voies -->
               <td>{{ area.routes.length }} voies</td>
             </tr>
@@ -18,17 +18,21 @@
     </div>
   </div>
 </template>
-<script>
-import getAreas from "../../../api/controllers/areaController.js";
 
+<script>
 export default {
   data() {
     return {
       areas: []
     };
   },
-  getArticles() {
-      fetch("http://monapi.com/articles/", {
+  mounted() {
+    // Appel de la méthode getAreas lors de la création du composant
+    this.getAreas();
+  },
+  methods: {
+    getAreas() {
+      fetch("http://localhost:3000/areas/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -37,9 +41,13 @@ export default {
       })
       .then(response => response.json())
       .then(data => {
-        this.areas = data.posts
+        this.areas = data;
       })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des areas :', error);
+      });
     }
+  }
 };
 </script>
 
