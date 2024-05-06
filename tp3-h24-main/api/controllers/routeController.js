@@ -39,6 +39,7 @@ exports.createRoute = async (req, res, next) => {
 
 
 exports.getRoutes = async (req, res, next) => {
+    console.log("allo")
     Route.find()
         .then(routes => {
 

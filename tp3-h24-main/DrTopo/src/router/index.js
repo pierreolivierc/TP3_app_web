@@ -53,7 +53,7 @@ const router = createRouter({
       component: RouteFormView
     },
     {
-      path: '/routes/:id ',
+      path: '/routes/:id',
       name: 'RouteView',
       component: RouteView
     },
