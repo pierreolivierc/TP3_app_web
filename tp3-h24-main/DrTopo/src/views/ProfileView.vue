@@ -30,12 +30,13 @@
 </template>
 
 <script>
+import { jwtDecode } from 'jwt-decode';
 export default {
   name: "ProfileView",
   data() {
     return {
       user: {
-        username: "JohnDoe" // Mettez ici le nom d'utilisateur de l'utilisateur connecté
+        username: "" // Mettez ici le nom d'utilisateur de l'utilisateur connecté
       },
       areas: [
         { id: 1, name: "Voie de la Cascade", location: "Cascade"},
@@ -48,6 +49,19 @@ export default {
         { id: 3, name: "Voie du Crépuscule", area: "Forêt"}
       ]
     };
+  },
+  created() {
+    this.profil(); // Appel de la méthode profil lors de la création du composant
+  },
+  methods: {
+    profil() {
+      const token = localStorage.getItem('jwt')
+      if (token) {
+        const decoded = jwtDecode(token);
+        this.username = decoded.username
+      }
+    }
   }
+
 };
 </script>

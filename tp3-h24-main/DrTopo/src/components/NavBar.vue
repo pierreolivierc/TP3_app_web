@@ -55,8 +55,7 @@ export default {
       const token = localStorage.getItem('jwt')
       if (token) {
         const decoded = jwtDecode(token);
-        console.log(token.user.username)
-        // this.username = decoded.username;
+        this.username = decoded.username
       } else {
         this.username = "";
       }
@@ -64,12 +63,11 @@ export default {
   },
   created() {
     this.isLogged = localStorage.getItem('jwt') !== null
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
-    if (token) {
-      const decoded = jwtDecode(token);
-      console.log(decoded.username + "2")
-      // this.username = decoded.username;
-    }
+    const token = localStorage.getItem('jwt')
+      if (token) {
+        const decoded = jwtDecode(token);
+        this.username = decoded.username
+      }
   },
   methods: {
     logout() {
