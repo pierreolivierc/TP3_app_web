@@ -21,43 +21,41 @@
 <script>
 export default {
   name: "SignIn",
-  data() {
-    return {
-      email: '',
-      password: '',
-      errorMessage: ''
-    };
-  },
-  methods: {
-    login() {
-      this.errorMessage = '';
-      fetch("http://localhost:3000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: this.email,
-          password: this.password,
-        }),
-      })
-          .then((response) => {
-            if (response.status === 200) {
-              return response.json();
-            } else {
-              throw new Error("Adresse courriel ou mot de passe incorrect");
-            }
-          })
-          .then((data) => {
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("user", JSON.stringify(data.user));
-            this.$router.push("/");
-          })
-          .catch((error) => {
-            this.errorMessage = "Adresse courriel ou mot de passe incorrect";
-            console.log(error);
-          });
+   data: () => {
+      return {
+        email: "",
+        password: "",
+      }
     },
+    methods: {
+      login() {
+        fetch("http://localhost:3000/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: this.email,
+            password: this.password,
+          }),
+        })
+            .then((response) => {
+              if (response.status === 200) {
+                return response.json();
+              } else {
+                throw new Error("Erreur !");
+              }
+            })
+            .then((data) => {
+              console.log('data', data)
+              localStorage.setItem("token", data.token);
+              localStorage.setItem("user", JSON.stringify(data.user));
+              this.$router.push("/");
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+      }
   }
 };
 </script>

@@ -22,26 +22,24 @@
 import getAreas from "../../../api/controllers/areaController.js";
 
 export default {
-  name: "IndexView",
   data() {
     return {
       areas: []
     };
   },
-  mounted() {
-    this.fetchAreas();
-  },
-  methods: {
-    fetchAreas() {
-      getAreas()
-        .then(response => {
-          this.areas = response.data;
-        })
-        .catch(error => {
-          console.error('Erreur lors de la récupération des areas :', error);
-        });
+  getArticles() {
+      fetch("http://monapi.com/articles/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem('token'),
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        this.areas = data.posts
+      })
     }
-  }
 };
 </script>
 
