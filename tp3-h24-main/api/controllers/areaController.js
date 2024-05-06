@@ -71,6 +71,7 @@ exports.getArea = async (req, res, next) => {
                 error.statusCode = 404;
                 throw error;
             }
+            area.routes.sort((a, b) => a.grade.value - b.grade.value);
             res.status(200).json(area);
         })
         .catch(err => {
