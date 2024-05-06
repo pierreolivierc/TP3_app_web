@@ -12,13 +12,23 @@
       </ul>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <router-link to="/signin" class="nav-link me-3 py-2" :class="{ 'active': $route.path === '/signin' }">
+          <router-link v-show="!isLogged" to="/signin" class="nav-link me-3 py-2" :class="{ 'active': $route.path === '/signin' }">
             Connexion
           </router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/signup" class="nav-link me-3 py-2" :class="{ 'active': $route.path === '/signup' }">
+          <router-link v-show="!isLogged" to="/signup" class="nav-link me-3 py-2" :class="{ 'active': $route.path === '/signup' }">
             Inscription
+          </router-link>
+        </li>
+        <li>
+          <router-link v-on:click="logout" v-show="isLogged" to="/" class="nav-link me-3 py-2 ">
+            Deconnexion
+          </router-link>
+        </li>
+        <li>
+          <router-link v-show="isLogged"  to="/profile" class="nav-link me-3 py-2" :class="{ 'active': $route.path === '/profile' }">
+            Profil
           </router-link>
         </li>
       </ul>
@@ -29,4 +39,26 @@
 
 <script>
 import 'bootstrap/dist/css/bootstrap.css';
+export default {
+  data() {
+    return {
+      isLogged: false
+    }
+  },
+  watch: {
+    '$route' () {
+      this.isLogged = localStorage.getItem('token') !== null
+    }
+  },
+  created() {
+    this.isLogged = localStorage.getItem('token') !== null
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem('token')
+      this.isLogged = false
+      this.$router.push({ name: 'Home' })
+    }
+  }
+}
 </script>
