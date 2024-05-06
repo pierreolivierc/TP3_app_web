@@ -4,8 +4,7 @@
       <div class="col-md-12">
         <h2>{{ area.name }}</h2>
         <div class="card">
-          <div class="card-body">
-          </div>
+          <div id="map" style="height: 200px;"></div>
         </div>
         <h3>Description</h3>
         <p>{{ area.description }}</p>
@@ -27,6 +26,9 @@
 </template>
 
 <script>
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
 export default {
   data() {
     return {
@@ -56,10 +58,25 @@ export default {
       })
       .then(data => {
         this.area = data;
+        this.showMap(data.lon, data.lat);
       })
       .catch(error => {
         console.error(error);
       });
+    },
+    showMap(lon, lat) {
+      // Créer une carte Leaflet
+      const map = L.map('map').setView([lat, lon], 13);
+
+      // Ajouter une couche de tuile OpenStreetMap
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      // Ajouter un marqueur à l'emplacement spécifié
+      L.marker([lat, lon]).addTo(map)
+        .bindPopup(this.area.name) // Ajouter un popup avec le nom de l'area
+        .openPopup();
     }
   }
 };
