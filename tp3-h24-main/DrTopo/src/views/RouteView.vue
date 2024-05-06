@@ -5,7 +5,7 @@
         <h2><strong>{{ route.name }}</strong></h2>
         <h3><strong>{{ route.grade.text }}</strong></h3>
         <div>
-          <div class="d-flex"><p>Lieux:</p></div>
+          <div class="d-flex"><p>Lieux:</p><p>{{}}</p></div>
           <div class="d-flex"><p>Type:</p></div>
           <div class="d-flex"><p>Partagé par:</p></div>
         </div>

@@ -39,7 +39,6 @@ exports.createRoute = async (req, res, next) => {
 
 
 exports.getRoutes = async (req, res, next) => {
-    console.log("allo")
     Route.find()
         .then(routes => {
 
@@ -70,6 +69,14 @@ const userId = req.params.id
 exports.getRoute = async (req, res, next) => {
     const routeId = req.params.id
     Route.findById(routeId)
+        // .populate({
+        //     path : "areas",
+        //     model : Area,
+        //     populate : {
+        //         path : "users",
+        //         model : User,
+        //     }
+        // })
         .then(route => {
             if (!route) {
                 const error = new Error('La route n\'existe pas.')
