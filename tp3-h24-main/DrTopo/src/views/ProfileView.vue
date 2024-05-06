@@ -36,7 +36,8 @@ export default {
   data() {
     return {
       user: {
-        username: "" // Mettez ici le nom d'utilisateur de l'utilisateur connecté
+        username: "",
+        id: ""
       },
       areas: [
         { id: 1, name: "Voie de la Cascade", location: "Cascade"},
@@ -51,16 +52,15 @@ export default {
     };
   },
   created() {
-    this.profil(); // Appel de la méthode profil lors de la création du composant
-  },
-  methods: {
-    profil() {
-      const token = localStorage.getItem('jwt')
+    const token = localStorage.getItem('jwt')
       if (token) {
         const decoded = jwtDecode(token);
-        this.username = decoded.username
+        this.user.username = decoded.username
+        this.user.id = decoded.userId
       }
-    }
+  },
+  methods: {
+
   }
 
 };
