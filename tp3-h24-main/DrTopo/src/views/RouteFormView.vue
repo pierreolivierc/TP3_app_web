@@ -168,6 +168,8 @@ export default {
             this.approche = data.approach;
             this.description = data.description;
             this.descente = data.descent;
+
+            this.updateAreaId();
           })
           .catch(error => {
             console.error(error);
