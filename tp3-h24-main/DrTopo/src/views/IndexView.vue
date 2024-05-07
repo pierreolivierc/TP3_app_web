@@ -24,13 +24,13 @@
                   </div>
                   <div class="form-group col-md-4">
                     <select id="difficultyMin" class="form-control mx-2">
-                      <option v-for="grade in climbingGrades" :key="grade">{{ grade }}</option>
+                      <option v-for="grade in climbingGrades" :key="grade">{{ grade.text }}</option>
                     </select>
                   </div>
                   <div class="form-group col-md-4 d-flex ms-2">
                     <label for="difficultyMax" class="mx-2">à</label>
                     <select id="difficultyMax" class="form-control">
-                      <option v-for="grade in climbingGrades" :key="grade">{{ grade }}</option>
+                      <option v-for="grade in climbingGrades" :key="grade">{{ grade.text }}</option>
                     </select>
                   </div>
                 </div>

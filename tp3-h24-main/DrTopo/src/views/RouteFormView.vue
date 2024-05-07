@@ -19,15 +19,15 @@
         <div class="col">
           <div class="mb-3">
             <label for="grade" class="form-label">Difficulté :</label>
-            <select id="grade" class="form-control mx-2" v-model="difficulty">
-              <option v-for="grade in climbingGrades" :key="grade">{{ grade }}</option>
+            <select id="grade" class="form-control mx-2" v-model="grade" @change="updateGrade">
+              <option v-for="grade in climbingGrades" :key="grade.value">{{ grade.text }}</option>
             </select>
           </div>
         </div>
       </div>
       <div class="mb-3">
         <label for="lieu" class="form-label">Lieu :</label>
-        <select id="lieu" class="form-control ms-2" v-model="area">
+        <select id="lieu" class="form-control ms-2" v-model="area" @change="updateAreaId">
           <option v-for="area in areas" :key="area._id">{{ area.name }}</option>
         </select>
       </div>
@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import {jwtDecode} from 'jwt-decode';
+
 export default {
   data() {
     return {
@@ -56,10 +58,13 @@ export default {
       type: '',
       difficulty: '',
       area: '',
+      areaId: '',
       approche: '',
       description: '',
       descente: '',
+      userId: '',
       isNewRoute: false,
+      grade: {text: '', value: ''},
       climbingGrades: [],
       climbingType: [],
       areas: []
@@ -87,6 +92,14 @@ export default {
       this.areaId = routeId;
       this.getRoutes(routeId);
     }
+
+    const token = localStorage.getItem('jwt')
+    if (token || token !== undefined) {
+      const decoded = jwtDecode(token);
+      if (decoded) {
+        this.userId = decoded.userId
+      }
+    }
   },
   mounted() {
     // Appel de la méthode getAreas lors de la création du composant
@@ -101,6 +114,19 @@ export default {
       } else {
         this.updateArea();
       }
+    },
+    updateAreaId() {
+      const selectedArea = this.areas.find(area => area.name === this.area);
+      if (selectedArea) {
+        // Mise à jour de l'ID de la zone
+        this.areaId = selectedArea._id;
+      }
+    },
+    updateGrade(event) {
+      const selectedIndex = event.target.selectedIndex;
+      const selectedGrade = this.climbingGrades[selectedIndex];
+      this.grade = {text: selectedGrade.text, value: selectedGrade.value}; // Mise à jour de grade
+      console.log(this.grade)
     },
     getAreas() {
       fetch("http://localhost:3000/areas/", {
@@ -160,7 +186,7 @@ export default {
           approach: this.approach,
           descent: this.descent,
           area: this.areaId,
-          ruser: this.userId,
+          user: this.userId,
         })
       })
           .then(response => {
@@ -175,8 +201,9 @@ export default {
           })
     },
     createArea() {
+      console.log(this.grade)
       // if (this.validateForm()) {
-      fetch('http://localhost:3000/routes/:id', {
+      fetch('http://localhost:3000/routes/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -189,20 +216,18 @@ export default {
           approach: this.approach,
           descent: this.descent,
           area: this.areaId,
-          ruser: this.userId,
+          user: this.userId,
         })
       })
-          .then(response => {
-            if (response.ok) {
-              return response.json()
-            } else {
-              throw new Error('Impossible de modifier le user')
-            }
+          .then(_ => {
+            this.$router.push('/profile')
           })
           .catch(error => {
             this.errorMessage = error.message
           })
     }
-  },
-};
+  }
+  ,
+}
+;
 </script>

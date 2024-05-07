@@ -10,7 +10,6 @@ dotenv.config();
 const url_base = process.env.URL + ":" + process.env.PORT;
 
 exports.createRoute = async (req, res, next) => {
-    const Route = require('../models/Route'); // Importer le modèle de route
     const {name, type, grade, description, approach, descent, areaId, userId} = req.body;
 
     try {
