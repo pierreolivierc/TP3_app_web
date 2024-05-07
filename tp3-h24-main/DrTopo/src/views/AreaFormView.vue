@@ -5,31 +5,40 @@
     <form @submit.prevent="submitForm">
       <div class="mb-3">
         <label for="name" class="form-label">Nom :</label>
-        <input type="text" class="form-control" id="name" v-model="name" required>
+        <input type="text" class="form-control" id="name" v-model="name" :class="{ 'is-invalid': nameError }" required>
+        <div class="invalid-feedback" v-if="nameError">{{ nameError }}</div>
       </div>
       <div class="row">
         <div class="col">
           <div class="mb-3">
             <label for="longitude" class="form-label">Longitude :</label>
-            <input type="text" class="form-control" id="longitude" v-model="longitude" required>
+            <input type="text" class="form-control" id="longitude" v-model="longitude" :class="{ 'is-invalid': longitudeError }" required>
+            <div class="invalid-feedback" v-if="longitudeError">{{ longitudeError }}</div>
           </div>
         </div>
         <div class="col">
           <div class="mb-3">
             <label for="latitude" class="form-label">Latitude :</label>
-            <input type="text" class="form-control" id="latitude" v-model="latitude" required>
+            <input type="text" class="form-control" id="latitude" v-model="latitude" :class="{ 'is-invalid': latitudeError }" required>
+            <div class="invalid-feedback" v-if="latitudeError">{{ latitudeError }}</div>
           </div>
         </div>
       </div>
       <div class="mb-3">
         <label for="description" class="form-label">Description :</label>
-        <textarea class="form-control" id="description" v-model="description" rows="5" required></textarea>
+        <textarea class="form-control" id="description" v-model="description" :class="{ 'is-invalid': descriptionError }" rows="5" required></textarea>
+        <div class="invalid-feedback" v-if="descriptionError">{{ descriptionError }}</div>
       </div>
       <div class="mb-3">
         <label for="directions" class="form-label">S'y rendre :</label>
-        <textarea class="form-control" id="directions" v-model="directions" rows="5" required></textarea>
+        <textarea class="form-control" id="directions" v-model="directions" :class="{ 'is-invalid': directionsError }" rows="5" required></textarea>
+        <div class="invalid-feedback" v-if="directionsError">{{ directionsError }}</div>
       </div>
       <button type="submit" class="btn btn-primary">{{ isNewArea ? 'Créer' : 'Modifier' }}</button>
+      <!-- Feedback messages -->
+      <div v-if="feedbackMessage" class="mt-3">
+        <div :class="[ 'alert', feedbackClass ]">{{ feedbackMessage }}</div>
+      </div>
     </form>
   </div>
 </template>
@@ -46,7 +55,14 @@ export default {
       directions: '',
       userId: '',
       isNewArea: false,
-      areaId: null
+      areaId: null,
+      feedbackMessage: '',
+      feedbackClass: '',
+      nameError: '',
+      longitudeError: '',
+      latitudeError: '',
+      descriptionError: '',
+      directionsError: ''
     };
   },
   created() {
@@ -58,15 +74,15 @@ export default {
       const areaId = currentPath.replace(/^\/areas\/|\/edit$/g, '');
       this.areaId = areaId;
       this.getAreas(areaId);
-
     }
+
     const token = localStorage.getItem('jwt')
-      if (token || token !== undefined) {
-        const decoded = jwtDecode(token);
-        if(decoded){
-          this.userId = decoded.userId
-        }
+    if (token || token !== undefined) {
+      const decoded = jwtDecode(token);
+      if(decoded){
+        this.userId = decoded.userId
       }
+    }
   },
   methods: {
     getAreas(areaId) {
@@ -77,33 +93,49 @@ export default {
           "Authorization": "Bearer " + localStorage.getItem('token'),
         },
       })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Erreur lors de la récupération des détails de la zone');
-            }
-            return response.json();
-          })
-          .then(data => {
-            this.name = data.name;
-            this.longitude = data.lon;
-            this.latitude = data.lat;
-            this.description = data.description;
-            this.directions = data.gettingThere;
-          })
-          .catch(error => {
-            console.error(error);
-          });
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des détails de la zone');
+          }
+          return response.json();
+        })
+        .then(data => {
+          this.name = data.name;
+          this.longitude = data.lon;
+          this.latitude = data.lat;
+          this.description = data.description;
+          this.directions = data.gettingThere;
+        })
+        .catch(error => {
+          console.error(error);
+        });
     },
     submitForm() {
       const currentPath = window.location.pathname;
       if (currentPath.includes('/areas/new')) {
+        // Vérification de la validité des données
+        let isValid = true;
+        if (isNaN(parseFloat(this.latitude))) {
+          this.latitudeError = 'Veuillez entrer un nombre valide pour la latitude.';
+          isValid = false;
+        } else {
+          this.latitudeError = '';
+        }
+        if (isNaN(parseFloat(this.longitude))) {
+          this.longitudeError = 'Veuillez entrer un nombre valide pour la longitude.';
+          isValid = false;
+        } else {
+          this.longitudeError = '';
+        }
+        if (!isValid) {
+          return;
+        }
         this.createArea();
       } else {
         this.updateRoute(this.areaId);
       }
     },
     createArea() {
-      // if (this.validateForm()) {
       fetch('http://localhost:3000/areas/', {
         method: 'POST',
         headers: {
@@ -116,19 +148,21 @@ export default {
           lon: this.longitude,
           lat: this.latitude,
           user: this.userId
-
         })
       })
-
-          .then(_ => {
-            this.$router.push('/profile')
-          })
-          .catch(error => {
-            this.errorMessage = error.message
-          })
+        .then(response => {
+          if (response.ok) {
+            this.showFeedback('Lieu créé avec succès.', 'alert-success');
+            this.$router.push('/profile');
+          } else {
+            throw new Error('Erreur lors de la création du lieu.');
+          }
+        })
+        .catch(error => {
+          this.showFeedback(error.message, 'alert-danger');
+        });
     },
     updateRoute(areaId) {
-      // if (this.validateForm()) {
       fetch(`http://localhost:3000/areas/${areaId}`, {
         method: 'PUT',
         headers: {
@@ -140,18 +174,28 @@ export default {
           gettingThere: this.directions,
           lon: this.longitude,
           lat: this.latitude
-
         })
       })
-
-          .then(_ => {
-            this.$router.push('/profile')
-          })
-          .catch(error => {
-            this.errorMessage = error.message
-          })
+        .then(response => {
+          if (response.ok) {
+            this.showFeedback('Lieu modifié avec succès.', 'alert-success');
+            this.$router.push('/profile');
+          } else {
+            throw new Error('Erreur lors de la modification du lieu.');
+          }
+        })
+        .catch(error => {
+          this.showFeedback(error.message, 'alert-danger');
+        });
+    },
+    showFeedback(message, cssClass) {
+      this.feedbackMessage = message;
+      this.feedbackClass = cssClass;
+      setTimeout(() => {
+        this.feedbackMessage = '';
+        this.feedbackClass = '';
+      }, 5000);
     }
-  },
-
+  }
 };
 </script>

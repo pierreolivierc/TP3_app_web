@@ -11,7 +11,7 @@
         <div class="col">
           <div class="mb-3">
             <label for="type" class="form-label">Type :</label>
-            <select id="type" class="form-control mx-2" v-model="type">
+            <select id="type" class="form-control mx-2" v-model="type" required>
               <option v-for="type in climbingType" :key="type">{{ type }}</option>
             </select>
           </div>
@@ -19,7 +19,7 @@
         <div class="col">
           <div class="mb-3">
             <label for="grade" class="form-label">Difficulté :</label>
-            <select id="grade" class="form-control mx-2" v-model="grade.text" @change="updateGrade">
+            <select id="grade" class="form-control mx-2" v-model="grade.text" @change="updateGrade" required>
               <option v-for="grade in climbingGrades" :key="grade.value">{{ grade.text }}</option>
             </select>
           </div>
@@ -27,21 +27,21 @@
       </div>
       <div class="mb-3">
         <label for="lieu" class="form-label">Lieu :</label>
-        <select id="lieu" class="form-control ms-2" v-model="area" @change="updateAreaId">
+        <select id="lieu" class="form-control ms-2" v-model="area" @change="updateAreaId" required>
           <option v-for="area in areas" :key="area._id">{{ area.name }}</option>
         </select>
       </div>
       <div class="mb-3">
-        <label for="directions" class="form-label">Approche :</label>
-        <textarea class="form-control" id="directions" v-model="approche" rows="5" required></textarea>
+        <label for="approche" class="form-label">Approche :</label>
+        <textarea class="form-control" id="approche" v-model="approche" rows="5" required></textarea>
       </div>
       <div class="mb-3">
-        <label for="directions" class="form-label">Description :</label>
-        <textarea class="form-control" id="directions" v-model="description" rows="5" required></textarea>
+        <label for="description" class="form-label">Description :</label>
+        <textarea class="form-control" id="description" v-model="description" rows="5" required></textarea>
       </div>
       <div class="mb-3">
-        <label for="directions" class="form-label">Descente :</label>
-        <textarea class="form-control" id="directions" v-model="descente" rows="5" required></textarea>
+        <label for="descente" class="form-label">Descente :</label>
+        <textarea class="form-control" id="descente" v-model="descente" rows="5" required></textarea>
       </div>
       <button type="submit" class="btn btn-primary">Créer</button>
     </form>
