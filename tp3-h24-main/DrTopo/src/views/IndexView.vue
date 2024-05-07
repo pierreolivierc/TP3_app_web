@@ -37,7 +37,7 @@
                 <div class="form-group d-flex my-3">
                   <label for="location">Lieux</label>
                   <select id="location" class="form-control ms-2" v-model="selectedLocation">
-                    <option v-for="area in areas" :key="area._id">{{ area.name }}</option>
+                    <option v-for="area in areas" :key="area._id" :value="area._id">{{ area.name }}</option>
                   </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Rechercher</button>
@@ -105,7 +105,6 @@ export default {
   },
   methods: {
     updateGrade(event) {
-      console.log(event.target.value)
       this.selectedMinDifficulty = event.target.value;
     },
     updateGradeMax(event) {
@@ -128,7 +127,6 @@ export default {
           });
     },
     getFilteredRoutes() {
-      console.log(this.selectedMinDifficulty, this.selectedMaxDifficulty)
       fetch(`http://localhost:3000/routes/?type=${this.selectedType}&minDifficulty=${this.selectedMinDifficulty}&maxDifficulty=${this.selectedMaxDifficulty}&location=${this.selectedLocation}`, {
         method: "GET",
         headers: {
