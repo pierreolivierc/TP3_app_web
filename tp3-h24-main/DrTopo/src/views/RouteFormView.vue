@@ -94,8 +94,13 @@ export default {
   },
   methods: {
     submitForm() {
-      // Handle form submission
-      console.log('Formulaire envoyé');
+      const currentPath = window.location.pathname;
+
+      if (currentPath.includes('/routes/new')) {
+        this.createArea();
+      } else {
+        this.updateArea();
+      }
     },
     getAreas() {
       fetch("http://localhost:3000/areas/", {
@@ -140,6 +145,64 @@ export default {
             console.error(error);
           });
     },
-  }
+    updateArea() {
+      // if (this.validateForm()) {
+      fetch('http://localhost:3000/routes/:id', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: this.name,
+          type: this.type,
+          grade: this.grade,
+          description: this.description,
+          approach: this.approach,
+          descent: this.descent,
+          area: this.areaId,
+          ruser: this.userId,
+        })
+      })
+          .then(response => {
+            if (response.ok) {
+              return response.json()
+            } else {
+              throw new Error('Impossible de modifier le user')
+            }
+          })
+          .catch(error => {
+            this.errorMessage = error.message
+          })
+    },
+    createArea() {
+      // if (this.validateForm()) {
+      fetch('http://localhost:3000/routes/:id', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: this.name,
+          type: this.type,
+          grade: this.grade,
+          description: this.description,
+          approach: this.approach,
+          descent: this.descent,
+          area: this.areaId,
+          ruser: this.userId,
+        })
+      })
+          .then(response => {
+            if (response.ok) {
+              return response.json()
+            } else {
+              throw new Error('Impossible de modifier le user')
+            }
+          })
+          .catch(error => {
+            this.errorMessage = error.message
+          })
+    }
+  },
 };
 </script>

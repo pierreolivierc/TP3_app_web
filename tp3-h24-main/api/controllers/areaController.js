@@ -10,15 +10,17 @@ dotenv.config();
 const url_base = process.env.URL + ":" + process.env.PORT;
 
 exports.createArea = async (req, res, next) => {
-    const {name, description, gettingThere, lon, lat} = req.body
+    const {name, description, gettingThere, lon, lat, user} = req.body
 
     const area = new Area({
         name: name,
         description: description,
         gettingThere: gettingThere,
         lon: lon,
-        lat: lat
+        lat: lat,
+        user: user
     })
+
     area.save()
         .then(result => {
             res.location("/areas/" + result._id)
@@ -89,10 +91,10 @@ exports.getArea = async (req, res, next) => {
 exports.updateArea = async (req, res, next) => {
     const areaId = req.params.id
     const {name, description, gettingThere, lon, lat} = req.body
-    User.findById(areaId)
+    Area.findById(areaId)
         .then(area => {
             if (!area) {
-                return res.status(404).json({message: "L'utilisateur n'existe pas."})
+                return res.status(404).json({message: "Le lieu n'existe pas."})
             }
             area.name = name
             area.description = description

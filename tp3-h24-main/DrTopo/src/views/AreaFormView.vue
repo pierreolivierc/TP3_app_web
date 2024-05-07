@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import { jwtDecode } from 'jwt-decode';
 export default {
   data() {
     return {
@@ -43,6 +44,7 @@ export default {
       latitude: '',
       description: '',
       directions: '',
+      userId: '',
       isNewArea: false,
       areaId: null
     };
@@ -58,6 +60,13 @@ export default {
       this.getAreas(areaId);
 
     }
+    const token = localStorage.getItem('jwt')
+      if (token || token !== undefined) {
+        const decoded = jwtDecode(token);
+        if(decoded){
+          this.userId = decoded.userId
+        }
+      }
   },
   methods: {
     getAreas(areaId) {
@@ -68,26 +77,81 @@ export default {
           "Authorization": "Bearer " + localStorage.getItem('token'),
         },
       })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Erreur lors de la récupération des détails de la zone');
-        }
-        return response.json();
-      })
-      .then(data => {
-        this.name = data.name;
-        this.longitude = data.lon;
-        this.latitude = data.lat;
-        this.description = data.description;
-        this.directions = data.gettingThere;
-      })
-      .catch(error => {
-        console.error(error);
-      });
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Erreur lors de la récupération des détails de la zone');
+            }
+            return response.json();
+          })
+          .then(data => {
+            this.name = data.name;
+            this.longitude = data.lon;
+            this.latitude = data.lat;
+            this.description = data.description;
+            this.directions = data.gettingThere;
+          })
+          .catch(error => {
+            console.error(error);
+          });
     },
     submitForm() {
-      console.log('Formulaire envoyé');
+      const currentPath = window.location.pathname;
+      if (currentPath.includes('/areas/new')) {
+        this.createArea();
+      } else {
+        this.updateRoute(this.areaId);
+      }
+    },
+    createArea() {
+      // if (this.validateForm()) {
+      fetch('http://localhost:3000/areas/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: this.name,
+          description: this.description,
+          gettingThere: this.directions,
+          lon: this.longitude,
+          lat: this.latitude,
+          user: this.userId
+
+        })
+      })
+
+          .then(_ => {
+            this.$router.push('/profile')
+          })
+          .catch(error => {
+            this.errorMessage = error.message
+          })
+    },
+    updateRoute(areaId) {
+      // if (this.validateForm()) {
+      fetch(`http://localhost:3000/areas/${areaId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: this.name,
+          description: this.description,
+          gettingThere: this.directions,
+          lon: this.longitude,
+          lat: this.latitude
+
+        })
+      })
+
+          .then(_ => {
+            this.$router.push('/profile')
+          })
+          .catch(error => {
+            this.errorMessage = error.message
+          })
     }
-  }
+  },
+
 };
 </script>
