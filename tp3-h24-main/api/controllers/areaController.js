@@ -93,7 +93,6 @@ exports.getFilteredRoutes = async (req, res, next) => {
         const minDifficulty = req.query.minDifficulty;
         const maxDifficulty = req.query.maxDifficulty;
         const location = req.query.location;
-        console.log(location)
         const filteredRoutes = await Route.find({
             type: type,
             'grade.value': {$gte: minDifficulty, $lte: maxDifficulty},

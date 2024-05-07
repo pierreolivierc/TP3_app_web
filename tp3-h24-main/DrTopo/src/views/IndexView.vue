@@ -13,32 +13,36 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Trouver une voie</h5>
-              <form @submit.prevent="getFilteredRoutes">
+              <form @submit.prevent="getFilteredRoutes" class="needs-validation" novalidate>
                 <div class="form-row d-flex">
                   <!-- Selects -->
                   <div class="form-group col-md-4 d-flex">
                     <label for="type">Type</label>
-                    <select id="type" class="form-control mx-2" v-model="selectedType">
+                    <select id="type" class="form-control mx-2" v-model="selectedType" required>
                       <option v-for="type in climbingType" :key="type">{{ type }}</option>
                     </select>
+                    <div class="invalid-feedback">Veuillez sélectionner un type.</div>
                   </div>
                   <div class="form-group col-md-4">
-                    <select id="difficultyMin" class="form-control mx-2" @change="updateGrade">
+                    <select id="difficultyMin" class="form-control mx-2" @change="updateGrade" required>
                       <option v-for="grade in climbingGrades" :key="grade.value" :value="grade.value">{{ grade.text }}</option>
                     </select>
+                    <div class="invalid-feedback">Veuillez sélectionner une difficulté minimale.</div>
                   </div>
                   <div class="form-group col-md-4 d-flex ms-2">
                     <label for="difficultyMax" class="mx-2">à</label>
-                    <select id="difficultyMax" class="form-control" @change="updateGradeMax">
+                    <select id="difficultyMax" class="form-control" @change="updateGradeMax" required>
                       <option v-for="grade in climbingGrades" :key="grade.value" :value="grade.value">{{ grade.text }}</option>
                     </select>
+                    <div class="invalid-feedback">Veuillez sélectionner une difficulté maximale.</div>
                   </div>
                 </div>
                 <div class="form-group d-flex my-3">
                   <label for="location">Lieux</label>
-                  <select id="location" class="form-control ms-2" v-model="selectedLocation">
+                  <select id="location" class="form-control ms-2" v-model="selectedLocation" required>
                     <option v-for="area in areas" :key="area._id" :value="area._id">{{ area.name }}</option>
                   </select>
+                  <div class="invalid-feedback">Veuillez sélectionner un lieu.</div>
                 </div>
                 <button type="submit" class="btn btn-primary">Rechercher</button>
               </form>
@@ -127,6 +131,14 @@ export default {
           });
     },
     getFilteredRoutes() {
+      // Vérification de la sélection de toutes les options
+      if (!this.selectedType || !this.selectedMinDifficulty || !this.selectedMaxDifficulty || !this.selectedLocation) {
+        // Affichage d'un message d'erreur ou d'une action appropriée
+        console.error("Veuillez remplir tous les champs du formulaire.");
+        return; // Arrêt de la fonction si tous les champs ne sont pas remplis
+      }
+
+      // Si tous les champs sont remplis, procédez à la requête
       fetch(`http://localhost:3000/routes/?type=${this.selectedType}&minDifficulty=${this.selectedMinDifficulty}&maxDifficulty=${this.selectedMaxDifficulty}&location=${this.selectedLocation}`, {
         method: "GET",
         headers: {
@@ -146,7 +158,6 @@ export default {
           .catch(error => {
             console.error(error);
           });
-
     }
   }
 };
