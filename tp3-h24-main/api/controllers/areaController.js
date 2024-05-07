@@ -87,6 +87,30 @@ exports.getArea = async (req, res, next) => {
         });
 };
 
+exports.getFilteredRoutes = async (req, res, next) => {
+    try {
+        const type = req.query.type;
+        const minDifficulty = req.query.minDifficulty;
+        const maxDifficulty = req.query.maxDifficulty;
+        const location = req.query.location;
+
+        const filteredRoutes = await Route.find({
+            type: type,
+            'grade.value': { $gte: minDifficulty, $lte: maxDifficulty },
+            // 'area.name': location
+        });
+
+        // Tri des routes par grade
+        filteredRoutes.sort((a, b) => {
+            return a.grade.value - b.grade.value;
+        });
+
+        res.status(200).json(filteredRoutes);
+    } catch (error) {
+        console.error('Erreur lors de la récupération des routes filtrées :', error);
+        res.status(500).json({ message: 'Erreur lors de la récupération des routes filtrées' });
+    }
+};
 
 exports.updateArea = async (req, res, next) => {
     const areaId = req.params.id

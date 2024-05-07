@@ -22,6 +22,8 @@ router.get("/areas/:id", areaController.getArea);
 // /areas/:areaId/routes => GET
 router.get("/areas/:id/routes", areaController.getRoutes);
 
+// /routes => GET
+router.get("/routes", areaController.getFilteredRoutes);
 
 // /areas/:areaId => PUT
 router.put("/areas/:id", areaController.updateArea);

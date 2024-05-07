@@ -13,30 +13,30 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Trouver une voie</h5>
-              <form>
+              <form @submit.prevent="getFilteredRoutes">
                 <div class="form-row d-flex">
                   <!-- Selects -->
                   <div class="form-group col-md-4 d-flex">
                     <label for="type">Type</label>
-                    <select id="type" class="form-control mx-2">
+                    <select id="type" class="form-control mx-2" v-model="selectedType">
                       <option v-for="type in climbingType" :key="type">{{ type }}</option>
                     </select>
                   </div>
                   <div class="form-group col-md-4">
-                    <select id="difficultyMin" class="form-control mx-2">
-                      <option v-for="grade in climbingGrades" :key="grade">{{ grade.text }}</option>
+                    <select id="difficultyMin" class="form-control mx-2" @change="updateGrade">
+                      <option v-for="grade in climbingGrades" :key="grade.value" :value="grade.value">{{ grade.text }}</option>
                     </select>
                   </div>
                   <div class="form-group col-md-4 d-flex ms-2">
                     <label for="difficultyMax" class="mx-2">à</label>
-                    <select id="difficultyMax" class="form-control">
-                      <option v-for="grade in climbingGrades" :key="grade">{{ grade.text }}</option>
+                    <select id="difficultyMax" class="form-control" @change="updateGradeMax">
+                      <option v-for="grade in climbingGrades" :key="grade.value" :value="grade.value">{{ grade.text }}</option>
                     </select>
                   </div>
                 </div>
                 <div class="form-group d-flex my-3">
                   <label for="location">Lieux</label>
-                  <select id="location" class="form-control ms-2">
+                  <select id="location" class="form-control ms-2" v-model="selectedLocation">
                     <option v-for="area in areas" :key="area._id">{{ area.name }}</option>
                   </select>
                 </div>
@@ -54,21 +54,14 @@
           <h2>Résultats</h2>
           <table class="table table-striped">
             <tbody>
-              <tr>
-                <td><a href="">Voie de la Cascade</a></td>
-                <td><a href="">Voie de l'Aube</a></td>
-                <td>5.8</td>
-              </tr>
-              <tr>
-                <td><a href="">Voie du Crépuscule</a></td>
-                <td><a href="">Voie de la Licorne</a></td>
-                <td>5.9</td>
-              </tr>
-              <tr>
-                <td><a href="">Voie de l'Aigle</a></td>
-                <td><a href="">Voie de l'Ours</a></td>
-                <td>5.10</td>
-              </tr>
+            <tr v-for="(route, index) in filteredRoutes" :key="index">
+              <td><a :href="'/routes/' + route._id">{{ route.name }}</a></td>
+              <td><a :href="'/areas/' + route.area._id">{{ route.area.name }}</a></td>
+              <td>{{ route.grade.text }}</td>
+              <td>{{ route.type }}</td>
+              <td><a :href="'/routes/' + route._id + '/edit'">modifier</a> <a href="#" @click="deleteRoute(route._id)">supprimer</a>
+              </td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -84,7 +77,13 @@ export default {
     return {
       climbingGrades: [],
       climbingType: [],
-      areas: []
+      areas: [],
+      routes: [],
+      selectedType: '',
+      selectedMinDifficulty: '',
+      selectedMaxDifficulty: '',
+      selectedLocation: '',
+      filteredRoutes: []
     };
   },
   async created() {
@@ -100,11 +99,18 @@ export default {
       console.error('Error fetching climbing grades:', error.message);
     }
   },
-   mounted() {
+  mounted() {
     // Appel de la méthode getAreas lors de la création du composant
     this.getAreas();
   },
   methods: {
+    updateGrade(event) {
+      console.log(event.target.value)
+      this.selectedMinDifficulty = event.target.value;
+    },
+    updateGradeMax(event) {
+      this.selectedMaxDifficulty = event.target.value;
+    },
     getAreas() {
       fetch("http://localhost:3000/areas/", {
         method: "GET",
@@ -113,16 +119,39 @@ export default {
           "Authorization": "Bearer " + localStorage.getItem('token'),
         },
       })
-      .then(response => response.json())
-      .then(data => {
-        this.areas = data;
+          .then(response => response.json())
+          .then(data => {
+            this.areas = data;
+          })
+          .catch(error => {
+            console.error('Erreur lors de la récupération des areas :', error);
+          });
+    },
+    getFilteredRoutes() {
+      console.log(this.selectedMinDifficulty, this.selectedMaxDifficulty)
+      fetch(`http://localhost:3000/routes/?type=${this.selectedType}&minDifficulty=${this.selectedMinDifficulty}&maxDifficulty=${this.selectedMaxDifficulty}&location=${this.selectedLocation}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem('token'),
+        },
       })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des areas :', error);
-      });
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Erreur lors de la récupération des routes');
+            }
+            return response.json();
+          })
+          .then(data => {
+            this.filteredRoutes = data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+
     }
   }
-}
+};
 </script>
 
 <style scoped>
