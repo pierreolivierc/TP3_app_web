@@ -12,6 +12,7 @@ const url_base = process.env.URL + ":" + process.env.PORT;
 exports.createRoute = async (req, res, next) => {
     const {name, type, grade, description, approach, descent, areaId, userId} = req.body;
 
+    console.log(userId, areaId)
     try {
         const route = new Route({
             name: name,
@@ -99,6 +100,7 @@ exports.getRoute = async (req, res, next) => {
 exports.updateRoute = async (req, res, next) => {
     const routeId = req.params.id
     const {name, type, grade, description, approach, descent, areaId, userId} = req.body;
+    console.log(areaId)
     Route.findById(routeId)
         .then(route => {
             if (!route) {

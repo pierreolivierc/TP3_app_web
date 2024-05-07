@@ -19,7 +19,7 @@
         <div class="col">
           <div class="mb-3">
             <label for="grade" class="form-label">Difficulté :</label>
-            <select id="grade" class="form-control mx-2" v-model="grade" @change="updateGrade">
+            <select id="grade" class="form-control mx-2" v-model="grade.text" @change="updateGrade">
               <option v-for="grade in climbingGrades" :key="grade.value">{{ grade.text }}</option>
             </select>
           </div>
@@ -59,6 +59,7 @@ export default {
       difficulty: '',
       area: '',
       areaId: '',
+      routeId: '',
       approche: '',
       description: '',
       descente: '',
@@ -89,7 +90,7 @@ export default {
       this.isNewRoute = true; // C'est une nouvelle zone
     } else {
       const routeId = currentPath.replace(/^\/routes\/|\/edit$/g, '');
-      this.areaId = routeId;
+      this.routeId = routeId;
       this.getRoutes(routeId);
     }
 
@@ -112,7 +113,7 @@ export default {
       if (currentPath.includes('/routes/new')) {
         this.createArea();
       } else {
-        this.updateArea();
+        this.updateArea(this.routeId);
       }
     },
     updateAreaId() {
@@ -162,6 +163,7 @@ export default {
             this.name = data.name;
             this.type = data.type;
             this.difficulty = data.grade.text;
+            this.grade = this.climbingGrades.find(grade => grade.text === data.grade.text);
             this.area = data.area.name;
             this.approche = data.approach;
             this.description = data.description;
@@ -171,10 +173,11 @@ export default {
             console.error(error);
           });
     },
-    updateArea() {
+    updateArea(routeId) {
       // if (this.validateForm()) {
-      fetch('http://localhost:3000/routes/:id', {
-        method: 'POST',
+      console.log(this.areaId)
+      fetch(`http://localhost:3000/routes/${routeId}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -185,23 +188,18 @@ export default {
           description: this.description,
           approach: this.approach,
           descent: this.descent,
-          area: this.areaId,
-          user: this.userId,
+          areaId: this.areaId,
+          userId: this.userId,
         })
       })
-          .then(response => {
-            if (response.ok) {
-              return response.json()
-            } else {
-              throw new Error('Impossible de modifier le user')
-            }
+          .then(_ => {
+            this.$router.push('/profile')
           })
           .catch(error => {
             this.errorMessage = error.message
           })
     },
     createArea() {
-      console.log(this.grade)
       // if (this.validateForm()) {
       fetch('http://localhost:3000/routes/', {
         method: 'POST',
@@ -215,8 +213,8 @@ export default {
           description: this.description,
           approach: this.approach,
           descent: this.descent,
-          area: this.areaId,
-          user: this.userId,
+          areaId: this.areaId,
+          userId: this.userId,
         })
       })
           .then(_ => {
@@ -226,8 +224,7 @@ export default {
             this.errorMessage = error.message
           })
     }
-  }
-  ,
+  },
 }
 ;
 </script>
