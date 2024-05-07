@@ -5,9 +5,9 @@
         <h2><strong>{{ route.name }}</strong></h2>
         <h3><strong>{{ route.grade.text }}</strong></h3>
         <div>
-          <div class="d-flex"><p>Lieux:</p><p>{{}}</p></div>
-          <div class="d-flex"><p>Type:</p></div>
-          <div class="d-flex"><p>Partagé par:</p></div>
+          <div class="d-flex"><p class="me-3">Lieux:</p><p>{{route.area.name}}</p></div>
+          <div class="d-flex"><p class="me-3">Type:</p><p>{{route.type}}</p></div>
+          <div class="d-flex"><p class="me-3">Partagé par:</p><p>{{route.user.username}}</p></div>
         </div>
         <h3>Approche</h3>
         <p>{{ route.approach }}</p>
@@ -27,7 +27,7 @@ export default {
       route: {}
     };
   },
-  mounted() {
+  created() {
     // Récupérer l'ID de l'URL
     const routeId = this.$route.params.id;
     console.log(routeId);

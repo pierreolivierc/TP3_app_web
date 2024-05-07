@@ -43,32 +43,34 @@ exports.getAreas = async (req, res, next) => {
 };
 
 exports.getUserAreas = async (req, res, next) => {
-const userId = req.params.id
-    Area.find({userId : userId})
+    const userId = req.params.id
+    Area.find({user: userId})
         .populate({
-            path : "routes",
-            model : Route,
+            path: "routes",
+            model: Route,
         })
         .then(userArea => {
             if (userArea.length === 0) {
-                const error = new Error('Aucun lieu trouvé pour cette utilisateur.')
-                error.statusCode = 404
-                throw error
+                const error = new Error('Aucun lieu trouvé pour cette utilisateur.');
+                error.statusCode = 404;
+                throw error;
             }
-            userArea.routes.sort((a, b) => a.grade.value - b.grade.value);
-            res.status(200).json(userArea)
+            console.log(userArea[0].routes)
+            // userArea.routes.sort((a, b) => a.grade.value - b.grade.value);
+            res.status(200).json(userArea);
         })
         .catch(err => {
-            next(err)
-        })
+            next(err);
+        });
 };
+
 
 exports.getArea = async (req, res, next) => {
     const areaId = req.params.id;
     Area.findById(areaId)
         .populate({
-            path : "routes",
-            model : Route,
+            path: "routes",
+            model: Route,
         })
         .then(area => {
             if (!area) {
@@ -113,7 +115,7 @@ exports.deleteArea = async (req, res, next) => {
     const areaId = req.params.id
     Area.findById(areaId)
         .then(route => {
-            return Route.findByIdAndDelete(areaId)
+            return Area.findByIdAndDelete(areaId)
         })
         .then(() => {
             res.status(204).send()
@@ -126,7 +128,7 @@ exports.deleteArea = async (req, res, next) => {
 
 exports.getRoutes = async (req, res, next) => {
     const areaId = req.params.id
-    Route.find({areaId : areaId})
+    Route.find({areaId: areaId})
         .then(routeArea => {
             if (routeArea.length === 0) {
                 const error = new Error('Aucune voie trouvé pour ce lieu.')

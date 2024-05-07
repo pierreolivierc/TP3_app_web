@@ -14,12 +14,12 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/',
-      name: '/IndexView',
+      name: 'IndexView',
       component: IndexView
     },
     {
       path: '/areas/new',
-      name: 'AreaFormView',
+      name: 'AreaFormNewView',
       component: AreaFormView
     },
     {

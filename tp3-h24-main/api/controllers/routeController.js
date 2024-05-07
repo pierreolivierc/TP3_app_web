@@ -69,20 +69,22 @@ const userId = req.params.id
 exports.getRoute = async (req, res, next) => {
     const routeId = req.params.id
     Route.findById(routeId)
-        // .populate({
-        //     path : "areas",
-        //     model : Area,
-        //     populate : {
-        //         path : "users",
-        //         model : User,
-        //     }
-        // })
+        .populate({
+            path : "area",
+            model : Area,
+
+        })
+        .populate ({
+                path : "user",
+                model : User,
+            })
         .then(route => {
             if (!route) {
                 const error = new Error('La route n\'existe pas.')
                 error.statusCode = 404
                 throw error
             }
+            console.log(route)
             res.status(200).json(route)
         })
         .catch(err => {

@@ -122,7 +122,7 @@ const route = [
     },
     {
         "_id": "631f5b8b8b8b8b8b8b8b8b9f",
-        "name": "Voie de la Tortue",
+        "name": "Voie des Tortues",
         "type": "SPORT",
         "grade": {"text": "5.8", "value": 5.08},
         "description": "Une voie facile avec des prises généreuses et un itinéraire bien défini. Convient aux débutants et aux grimpeurs intermédiaires.",
@@ -177,7 +177,7 @@ const route = [
     },
     {
         "_id": "631f5b8b8b8b8b8b8b8b8b1e",
-        "name": "Voie de la Licorne",
+        "name": "Voie des Licornes",
         "type": "SPORT",
         "grade": {"text": "5.9", "value": 5.09},
         "description": "Une voie classique avec des mouvements techniques et variés. Offre une vue imprenable sur la vallée.",
@@ -199,7 +199,7 @@ const route = [
     },
     {
         "_id": "631f5b8b8b8b8b8b8b8b8b2a",
-        "name": "Voie de la Cascade",
+        "name": "Voie des Cascades",
         "type": "TRAD",
         "grade": {"text": "5.8", "value": 5.08},
         "description": "Une voie traditionnelle avec une variété de protections naturelles. Offre une vue panoramique sur la vallée.",

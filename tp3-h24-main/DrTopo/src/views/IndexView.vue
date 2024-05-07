@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <!-- Partie du haut -->
@@ -7,7 +6,7 @@
         <!-- Titre et sous-titre -->
         <div class="col-md-6">
           <h2>Au-delà du guide</h2>
-          <h3 class="text-muted">Des milliers de voies partagées par pationné(e)s d'escalade comme vous!</h3>
+          <h3 class="text-muted">Des milliers de voies partagées par passionné(e)s d'escalade comme vous!</h3>
         </div>
         <!-- Card formulaire -->
         <div class="col-md-6">
@@ -27,31 +26,20 @@
                   </div>
                   <div class="form-group col-md-4">
                     <select id="difficultyMin" class="form-control mx-2">
-                      <option>5.7</option>
-                      <option>5.8</option>
-                      <option>5.9</option>
-                      <option>5.10</option>
-                      <option>5.11</option>
+                      <option v-for="grade in climbingGrades" :key="grade">{{ grade }}</option>
                     </select>
                   </div>
                   <div class="form-group col-md-4 d-flex ms-2">
                     <label for="difficultyMax" class="mx-2">à</label>
                     <select id="difficultyMax" class="form-control">
-                      <option>5.7</option>
-                      <option>5.8</option>
-                      <option>5.9</option>
-                      <option>5.10</option>
-                      <option>5.11</option>
+                      <option v-for="grade in climbingGrades" :key="grade">{{ grade }}</option>
                     </select>
                   </div>
                 </div>
                 <div class="form-group d-flex my-3">
                   <label for="location">Lieux</label>
                   <select id="location" class="form-control ms-2">
-                    <option>Falaise du Pic Vert</option>
-                    <option>Grotte des Chimères</option>
-                    <option>Mur du Dragon</option>
-                    <option>Rocher du Griffon</option>
+                    <option v-for="area in areas" :key="area._id">{{ area.name }}</option>
                   </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Rechercher</button>
@@ -93,7 +81,47 @@
 
 <script>
 export default {
-  name: "IndexView"
+  name: "IndexView",
+  data() {
+    return {
+      climbingGrades: [],
+      areas: []
+    };
+  },
+  async created() {
+    try {
+      const response = await fetch('../../public/grade.json');
+      if (!response.ok) {
+        throw new Error('Failed to fetch');
+      }
+      const data = await response.json();
+      this.climbingGrades = data.climbingGrades;
+    } catch (error) {
+      console.error('Error fetching climbing grades:', error.message);
+    }
+  },
+   mounted() {
+    // Appel de la méthode getAreas lors de la création du composant
+    this.getAreas();
+  },
+  methods: {
+    getAreas() {
+      fetch("http://localhost:3000/areas/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem('token'),
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        this.areas = data;
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des areas :', error);
+      });
+    }
+  }
 }
 </script>
 

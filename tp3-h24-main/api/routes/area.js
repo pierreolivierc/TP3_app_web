@@ -14,7 +14,7 @@ router.post("/areas/", areaController.createArea);
 router.get("/areas/", areaController.getAreas);
 
 // /areas/my-areas => GET
-router.get("/areas/my-areas", areaController.getAreas);
+router.get("/areas/my-areas/:id", areaController.getUserAreas);
 
 // /areas/:areaId => GET
 router.get("/areas/:id", areaController.getArea);
