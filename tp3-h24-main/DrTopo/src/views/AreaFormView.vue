@@ -53,10 +53,10 @@ export default {
     if (currentPath.includes('/areas/new')) {
       this.isNewArea = true; // C'est une nouvelle zone
     } else {
-      const areaId = currentPath.split('/').pop();
+      const areaId = currentPath.replace(/^\/areas\/|\/edit$/g, '');
       this.areaId = areaId;
-
       this.getAreas(areaId);
+
     }
   },
   methods: {

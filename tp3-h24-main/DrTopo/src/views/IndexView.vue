@@ -19,9 +19,7 @@
                   <div class="form-group col-md-4 d-flex">
                     <label for="type">Type</label>
                     <select id="type" class="form-control mx-2">
-                      <option>SPORT</option>
-                      <option>TRAD</option>
-                      <option>TOPROPE</option>
+                      <option v-for="type in climbingType" :key="type">{{ type }}</option>
                     </select>
                   </div>
                   <div class="form-group col-md-4">
@@ -85,6 +83,7 @@ export default {
   data() {
     return {
       climbingGrades: [],
+      climbingType: [],
       areas: []
     };
   },
@@ -96,6 +95,7 @@ export default {
       }
       const data = await response.json();
       this.climbingGrades = data.climbingGrades;
+      this.climbingType = data.climbingType;
     } catch (error) {
       console.error('Error fetching climbing grades:', error.message);
     }

@@ -55,7 +55,6 @@ exports.getUserAreas = async (req, res, next) => {
                 error.statusCode = 404;
                 throw error;
             }
-            console.log(userArea[0].routes)
             // userArea.routes.sort((a, b) => a.grade.value - b.grade.value);
             res.status(200).json(userArea);
         })

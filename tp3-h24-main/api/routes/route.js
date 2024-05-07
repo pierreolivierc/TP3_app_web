@@ -14,7 +14,7 @@ router.post("/routes/",  routeController.createRoute);
 router.get("/routes/", routeController.getRoutes);
 
 // /routes/my-routes => GET
-router.get("/routes/my-routes", routeController.getUserRoutes);
+router.get("/routes/my-routes/:id", routeController.getUserRoutes);
 
 // /routes/:routeId => GET
 router.get("/routes/:id", routeController.getRoute);

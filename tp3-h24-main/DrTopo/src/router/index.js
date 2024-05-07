@@ -23,7 +23,7 @@ const router = createRouter({
       component: AreaFormView
     },
     {
-      path: '/areas/:id/edi',
+      path: '/areas/:id/edit',
       name: 'AreaFormView',
       component: AreaFormView
     },
@@ -44,7 +44,7 @@ const router = createRouter({
     },
     {
       path: '/routes/new',
-      name: 'RouteFormView',
+      name: 'RouteFormNewView',
       component: RouteFormView
     },
     {

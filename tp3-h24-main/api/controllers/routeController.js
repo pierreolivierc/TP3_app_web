@@ -51,7 +51,11 @@ exports.getRoutes = async (req, res, next) => {
 
 exports.getUserRoutes = async (req, res, next) => {
 const userId = req.params.id
-    Route.find({userId : userId})
+    Route.find({user : userId})
+        .populate({
+            path: "area",
+            model: Area,
+        })
         .then(userRoute => {
             if (userRoute.length === 0) {
                 const error = new Error('Aucune voie trouvé pour cette utilisateur.')
