@@ -45,12 +45,17 @@ exports.getAreas = async (req, res, next) => {
 exports.getUserAreas = async (req, res, next) => {
 const userId = req.params.id
     Area.find({userId : userId})
+        .populate({
+            path : "routes",
+            model : Route,
+        })
         .then(userArea => {
             if (userArea.length === 0) {
                 const error = new Error('Aucun lieu trouvé pour cette utilisateur.')
                 error.statusCode = 404
                 throw error
             }
+            userArea.routes.sort((a, b) => a.grade.value - b.grade.value);
             res.status(200).json(userArea)
         })
         .catch(err => {

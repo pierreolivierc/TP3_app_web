@@ -55,7 +55,10 @@ export default {
       const token = localStorage.getItem('jwt')
       if (token) {
         const decoded = jwtDecode(token);
-        this.username = decoded.username
+        if(decoded !== undefined){
+          this.username = decoded.username
+        }
+
       } else {
         this.username = "";
       }
@@ -64,9 +67,11 @@ export default {
   created() {
     this.isLogged = localStorage.getItem('jwt') !== null
     const token = localStorage.getItem('jwt')
-      if (token) {
+      if (token || token !== undefined) {
         const decoded = jwtDecode(token);
-        this.username = decoded.username
+        if(decoded){
+           this.username = decoded.username
+        }
       }
   },
   methods: {
