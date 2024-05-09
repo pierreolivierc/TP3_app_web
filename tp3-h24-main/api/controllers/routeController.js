@@ -90,31 +90,42 @@ exports.getUserRoutes = async (req, res, next) => {
 
 
 exports.getRoute = async (req, res, next) => {
-    const routeId = req.params.id
-    Route.findById(routeId)
-        .populate({
-            path: "area",
-            model: Area,
+    const routeId = req.params.id;
+    try {
+        const route = await Route.findById(routeId)
+            .populate({
+                path: "area",
+                model: Area,
+            })
+            .populate({
+                path: "user",
+                model: User,
+            })
+            .exec();
 
-        })
-        .populate({
-            path: "user",
-            model: User,
-        })
-        .then(route => {
-            if (!route) {
-                const error = new Error('La route n\'existe pas.')
-                error.statusCode = 404
-                throw error
-            }
-            console.log(route)
-            res.status(200).json(route)
-        })
-        .catch(err => {
-            next(err)
-        })
+        if (!route) { // Vérifiez si la route n'existe pas
+            const error = new Error("La route n'existe pas.");
+            error.statusCode = 404;
+            throw error;
+        }
 
+        // Vous n'avez pas besoin de trier les routes ici car il s'agit de récupérer une seule route
+
+        const routeLinks = {
+            ...route.toJSON(),
+            links: [
+                { rel: 'self', method: 'GET', href: `${url_base}/routes/${route._id}` },
+                { rel: 'delete', method: 'DELETE', href: `${url_base}/routes/${route._id}` },
+                { rel: 'update', method: 'PUT', href: `${url_base}/routes/${route._id}` }
+            ]
+        };
+
+        res.status(200).json(routeLinks);
+    } catch (err) {
+        next(err);
+    }
 };
+
 
 exports.updateRoute = async (req, res, next) => {
     const routeId = req.params.id
