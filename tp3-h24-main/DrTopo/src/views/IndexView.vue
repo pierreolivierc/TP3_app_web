@@ -84,8 +84,8 @@ export default {
       areas: [],
       routes: [],
       selectedType: '',
-      selectedMinDifficulty: '',
-      selectedMaxDifficulty: '',
+      selectedMinDifficulty: '5.00',
+      selectedMaxDifficulty: '5.00',
       selectedLocation: '',
       filteredRoutes: []
     };
