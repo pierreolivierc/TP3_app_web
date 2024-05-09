@@ -12,8 +12,21 @@ const url_base = process.env.URL + ":" + process.env.PORT;
 exports.createRoute = async (req, res, next) => {
     const {name, type, grade, description, approach, descent, areaId, userId} = req.body;
 
-    console.log(userId, areaId)
     try {
+        const area = await Area.findById(areaId);
+        if (!area) {
+            const error = new Error("Le lieu n'existe pas.");
+            error.statusCode = 422;
+            throw error;
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            const error = new Error("L'utilisateur n'existe pas.");
+            error.statusCode = 422;
+            throw error;
+        }
+
         const route = new Route({
             name: name,
             type: type,
@@ -34,7 +47,6 @@ exports.createRoute = async (req, res, next) => {
         // Gérer les erreurs
         next(error);
     }
-
 };
 
 
@@ -100,7 +112,6 @@ exports.getRoute = async (req, res, next) => {
 exports.updateRoute = async (req, res, next) => {
     const routeId = req.params.id
     const {name, type, grade, description, approach, descent, areaId, userId} = req.body;
-    console.log(areaId)
     Route.findById(routeId)
         .then(route => {
             if (!route) {

@@ -12,6 +12,13 @@ const url_base = process.env.URL + ":" + process.env.PORT;
 exports.createArea = async (req, res, next) => {
     const {name, description, gettingThere, lon, lat, user} = req.body
 
+    const userExist = await User.findById(user);
+        if (!userExist) {
+            const error = new Error("L'utilisateur n'existe pas.");
+            error.statusCode = 422;
+            throw error;
+        }
+
     const area = new Area({
         name: name,
         description: description,

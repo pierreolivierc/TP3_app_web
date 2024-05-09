@@ -42,7 +42,7 @@ exports.logIn = (req, res, next) => {
                 process.env.SECRET_JWT,
                 {expiresIn: '1h'}
             );
-            res.status(200).json({token: token, user: loadedUser});
+            res.status(201).json({token: token, user: loadedUser});
         })
         .catch(err => {
             if (!err.statusCode) err.statusCode = 500;
