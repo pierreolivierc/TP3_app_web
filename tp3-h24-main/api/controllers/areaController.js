@@ -13,11 +13,11 @@ exports.createArea = async (req, res, next) => {
     const {name, description, gettingThere, lon, lat, user} = req.body
 
     const userExist = await User.findById(user);
-        if (!userExist) {
-            const error = new Error("L'utilisateur n'existe pas.");
-            error.statusCode = 422;
-            throw error;
-        }
+    if (!userExist) {
+        const error = new Error("L'utilisateur n'existe pas.");
+        error.statusCode = 422;
+        throw error;
+    }
 
     const area = new Area({
         name: name,
@@ -121,24 +121,37 @@ exports.getFilteredRoutes = async (req, res, next) => {
 exports.updateArea = async (req, res, next) => {
     const areaId = req.params.id
     const {name, description, gettingThere, lon, lat} = req.body
-    Area.findById(areaId)
-        .then(area => {
-            if (!area) {
-                return res.status(404).json({message: "Le lieu n'existe pas."})
-            }
-            area.name = name
-            area.description = description
-            area.gettingThere = gettingThere
-            area.lon = lon
-            area.lat = lat
-            return area.save()
-        })
-        .then(updatedArea => {
-            res.status(200).json(updatedArea)
-        })
-        .catch(err => {
-            next(err)
-        })
+
+    try {
+        const userExist = await User.findById(user);
+        if (!userExist) {
+            const error = new Error("L'utilisateur n'existe pas.");
+            error.statusCode = 422;
+            throw error;
+        }
+
+        Area.findById(areaId)
+            .then(area => {
+                if (!area) {
+                    return res.status(404).json({message: "Le lieu n'existe pas."})
+                }
+                area.name = name
+                area.description = description
+                area.gettingThere = gettingThere
+                area.lon = lon
+                area.lat = lat
+                return area.save()
+            })
+            .then(updatedArea => {
+                res.status(200).json(updatedArea)
+            })
+            .catch(err => {
+                next(err)
+            })
+    } catch (error) {
+        // Gérer les erreurs
+        next(error);
+    }
 
 }
 

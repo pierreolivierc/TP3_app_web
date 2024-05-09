@@ -100,17 +100,21 @@ export default {
             .then(response => {
               if (response.ok) {
                 return response.json()
+              } else if (response.status === 409) {
+                this.emailError = "Cette adresse courriel est déjà utilisée. Veuillez en choisir une autre.";
+                return Promise.reject("Email déjà utilisé"); // Ajoutez cette ligne pour arrêter la chaîne de promesses
               } else {
-                throw new Error('Impossible de se connecter')
+                this.emailError = "Impossible de se connecter";
+                return Promise.reject("Impossible de se connecter"); // Ajoutez cette ligne pour arrêter la chaîne de promesses
               }
             })
             .then(data => {
-              localStorage.setItem('jwt', data.jwt)
-              this.$router.push('/')
+              localStorage.setItem('jwt', data.jwt);
+              this.$router.push('/');
             })
             .catch(error => {
-              this.errorMessage = error.message
-            })
+              this.errorMessage = error.message;
+            });
       }
     },
     isValidEmail(email) {
