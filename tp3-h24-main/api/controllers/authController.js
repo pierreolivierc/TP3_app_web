@@ -35,12 +35,11 @@ exports.logIn = (req, res, next) => {
                 {
                     email: loadedUser.email,
                     username: loadedUser.username,
-                    level: loadedUser.level,
                     userId: loadedUser._id.toString()
                 },
                 // Utilise la clé secrète qui est dans le fichier .env
                 process.env.SECRET_JWT,
-                {expiresIn: '1h'}
+                {expiresIn: '24h'}
             );
             res.status(201).json({token: token, user: loadedUser});
         })
