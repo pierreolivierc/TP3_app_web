@@ -67,7 +67,7 @@ export default {
   created() {
     this.isLogged = localStorage.getItem('jwt') !== null
     const token = localStorage.getItem('jwt')
-      if (token || token !== undefined) {
+      if (token) {
         const decoded = jwtDecode(token);
         if(decoded){
            this.username = decoded.username

@@ -51,6 +51,9 @@ export default {
       this.user.username = decoded.username;
       this.user.id = decoded.userId;
     }
+    else{
+      this.$router.push('/forbidden');
+    }
   },
   mounted() {
     this.getUserAreas(this.user.id);

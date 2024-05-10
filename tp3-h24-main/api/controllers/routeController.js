@@ -103,13 +103,11 @@ exports.getRoute = async (req, res, next) => {
             })
             .exec();
 
-        if (!route) { // Vérifiez si la route n'existe pas
+        if (!route) {
             const error = new Error("La route n'existe pas.");
             error.statusCode = 404;
             throw error;
         }
-
-        // Vous n'avez pas besoin de trier les routes ici car il s'agit de récupérer une seule route
 
         const routeLinks = {
             ...route.toJSON(),
@@ -125,6 +123,7 @@ exports.getRoute = async (req, res, next) => {
         next(err);
     }
 };
+
 
 
 exports.updateRoute = async (req, res, next) => {

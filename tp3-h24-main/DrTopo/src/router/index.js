@@ -8,6 +8,7 @@ import RouteFormView from "../views/RouteFormView.vue";
 import RouteView from "../views/RouteView.vue";
 import SignIn from "../views/SignIn.vue";
 import SignUpView from "../views/SignUpView.vue";
+import Forbidden from "@/views/forbidden.vue";
 import NotFound from "@/views/NotFound.vue";
 
 const router = createRouter({
@@ -67,6 +68,9 @@ const router = createRouter({
       name: 'SignUpView',
       component: SignUpView
     },
+    {path: '/forbidden',
+      name: 'Forbidden',
+      component: Forbidden},
     { path: '/:notFound(.*)', component: NotFound }
   ]
 })
