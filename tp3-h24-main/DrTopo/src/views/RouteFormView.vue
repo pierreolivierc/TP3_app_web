@@ -72,6 +72,17 @@ export default {
     };
   },
   async created() {
+    const token = localStorage.getItem('jwt')
+    if (token) {
+      const decoded = jwtDecode(token);
+      if (decoded) {
+        this.userId = decoded.userId
+      }
+    }
+    else{
+      this.$router.push('/forbidden');
+    }
+
     try {
       const response = await fetch('../../public/grade.json');
       if (!response.ok) {
@@ -92,14 +103,6 @@ export default {
       const routeId = currentPath.replace(/^\/routes\/|\/edit$/g, '');
       this.routeId = routeId;
       this.getRoutes(routeId);
-    }
-
-    const token = localStorage.getItem('jwt')
-    if (token || token !== undefined) {
-      const decoded = jwtDecode(token);
-      if (decoded) {
-        this.userId = decoded.userId
-      }
     }
   },
   mounted() {

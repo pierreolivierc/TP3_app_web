@@ -66,6 +66,17 @@ export default {
     };
   },
   created() {
+    const token = localStorage.getItem('jwt')
+    if (token) {
+      const decoded = jwtDecode(token);
+      if(decoded){
+        this.userId = decoded.userId
+      }
+    }else{
+      this.$router.push('/forbidden');
+    }
+
+
     const currentPath = window.location.pathname;
 
     if (currentPath.includes('/areas/new')) {
@@ -76,13 +87,6 @@ export default {
       this.getAreas(areaId);
     }
 
-    const token = localStorage.getItem('jwt')
-    if (token || token !== undefined) {
-      const decoded = jwtDecode(token);
-      if(decoded){
-        this.userId = decoded.userId
-      }
-    }
   },
   methods: {
     getAreas(areaId) {

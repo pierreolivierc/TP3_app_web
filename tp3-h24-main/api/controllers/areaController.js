@@ -104,7 +104,11 @@ exports.getFilteredRoutes = async (req, res, next) => {
             type: type,
             'grade.value': {$gte: minDifficulty, $lte: maxDifficulty},
             area: location
-        });
+        })
+        .populate({
+                path: "area",
+                model: Area,
+            })
 
         // Tri des routes par grade
         filteredRoutes.sort((a, b) => {

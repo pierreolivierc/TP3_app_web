@@ -63,8 +63,6 @@
               <td><a :href="'/areas/' + route.area._id">{{ route.area.name }}</a></td>
               <td>{{ route.grade.text }}</td>
               <td>{{ route.type }}</td>
-              <td><a :href="'/routes/' + route._id + '/edit'">modifier</a> <a href="#" @click="deleteRoute(route._id)">supprimer</a>
-              </td>
             </tr>
             </tbody>
           </table>
