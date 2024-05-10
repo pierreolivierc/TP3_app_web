@@ -90,7 +90,7 @@ export default {
   },
   methods: {
     getAreas(areaId) {
-      fetch(`http://localhost:3000/areas/${areaId}`, {
+      fetch(process.env.URL+`/areas/${areaId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -140,7 +140,7 @@ export default {
       }
     },
     createArea() {
-      fetch('http://localhost:3000/areas/', {
+      fetch(process.env.URL+'/areas/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -167,7 +167,7 @@ export default {
         });
     },
     updateRoute(areaId) {
-      fetch(`http://localhost:3000/areas/${areaId}`, {
+      fetch(process.env.URL+`/areas/${areaId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
