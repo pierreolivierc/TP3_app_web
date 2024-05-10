@@ -1,50 +1,70 @@
 <template>
-  <div class="container">
-    <h1 class="mt-5 mb-4" v-if="isNewArea">Création d'un lieu</h1>
-    <h1 class="mt-5 mb-4" v-else>Modification d'un lieu</h1>
-    <form @submit.prevent="submitForm">
-      <div class="mb-3">
-        <label for="name" class="form-label">Nom :</label>
-        <input type="text" class="form-control" id="name" v-model="name" :class="{ 'is-invalid': nameError }" required>
-        <div class="invalid-feedback" v-if="nameError">{{ nameError }}</div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <div class="mb-3">
-            <label for="longitude" class="form-label">Longitude :</label>
-            <input type="text" class="form-control" id="longitude" v-model="longitude" :class="{ 'is-invalid': longitudeError }" required>
-            <div class="invalid-feedback" v-if="longitudeError">{{ longitudeError }}</div>
+  <div  class="container d-flex justify-content-between">
+    <div>
+      <h1 class="mt-5 mb-4" v-if="isNewArea">Création d'un lieu</h1>
+      <h1 class="mt-5 mb-4" v-else>Modification d'un lieu</h1>
+      <form @submit.prevent="submitForm">
+        <div class="mb-3">
+          <label for="name" class="form-label">Nom :</label>
+          <input type="text" class="form-control" id="name" v-model="name" :class="{ 'is-invalid': nameError }"
+                 required>
+          <div class="invalid-feedback" v-if="nameError">{{ nameError }}</div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <label for="longitude" class="form-label">Longitude :</label>
+              <input type="text" class="form-control" id="longitude" v-model="longitude"
+                     :class="{ 'is-invalid': longitudeError }" required>
+              <div class="invalid-feedback" v-if="longitudeError">{{ longitudeError }}</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-3">
+              <label for="latitude" class="form-label">Latitude :</label>
+              <input type="text" class="form-control" id="latitude" v-model="latitude"
+                     :class="{ 'is-invalid': latitudeError }" required>
+              <div class="invalid-feedback" v-if="latitudeError">{{ latitudeError }}</div>
+            </div>
           </div>
         </div>
-        <div class="col">
-          <div class="mb-3">
-            <label for="latitude" class="form-label">Latitude :</label>
-            <input type="text" class="form-control" id="latitude" v-model="latitude" :class="{ 'is-invalid': latitudeError }" required>
-            <div class="invalid-feedback" v-if="latitudeError">{{ latitudeError }}</div>
-          </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Description :</label>
+          <textarea class="form-control" id="description" v-model="description"
+                    :class="{ 'is-invalid': descriptionError }" rows="5" required></textarea>
+          <div class="invalid-feedback" v-if="descriptionError">{{ descriptionError }}</div>
         </div>
-      </div>
-      <div class="mb-3">
-        <label for="description" class="form-label">Description :</label>
-        <textarea class="form-control" id="description" v-model="description" :class="{ 'is-invalid': descriptionError }" rows="5" required></textarea>
-        <div class="invalid-feedback" v-if="descriptionError">{{ descriptionError }}</div>
-      </div>
-      <div class="mb-3">
-        <label for="directions" class="form-label">S'y rendre :</label>
-        <textarea class="form-control" id="directions" v-model="directions" :class="{ 'is-invalid': directionsError }" rows="5" required></textarea>
-        <div class="invalid-feedback" v-if="directionsError">{{ directionsError }}</div>
-      </div>
-      <button type="submit" class="btn btn-primary">{{ isNewArea ? 'Créer' : 'Modifier' }}</button>
-      <!-- Feedback messages -->
-      <div v-if="feedbackMessage" class="mt-3">
-        <div :class="[ 'alert', feedbackClass ]">{{ feedbackMessage }}</div>
-      </div>
-    </form>
+        <div class="mb-3">
+          <label for="directions" class="form-label">S'y rendre :</label>
+          <textarea class="form-control" id="directions" v-model="directions" :class="{ 'is-invalid': directionsError }"
+                    rows="5" required></textarea>
+          <div class="invalid-feedback" v-if="directionsError">{{ directionsError }}</div>
+        </div>
+        <button type="submit" class="btn btn-primary">{{ isNewArea ? 'Créer' : 'Modifier' }}</button>
+        <!-- Feedback messages -->
+        <div v-if="feedbackMessage" class="mt-3">
+          <div :class="[ 'alert', feedbackClass ]">{{ feedbackMessage }}</div>
+        </div>
+      </form>
+    </div>
+    <div v-if="!isNewArea" class="mt-5">
+      <h3>Voies</h3>
+      <table class="table table-striped">
+        <tbody>
+        <tr v-for="route in area.routes" :key="route._id">
+          <td><a :href="`/routes/${route._id}`">{{ route.name }}</a></td>
+          <td>{{ route.type }}</td>
+          <td>{{ route.grade.text }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script>
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
+
 const url = import.meta.env.VITE_URL
 export default {
   data() {
@@ -63,17 +83,18 @@ export default {
       longitudeError: '',
       latitudeError: '',
       descriptionError: '',
-      directionsError: ''
+      directionsError: '',
+      area: {}
     };
   },
   created() {
     const token = localStorage.getItem('jwt')
     if (token) {
       const decoded = jwtDecode(token);
-      if(decoded){
+      if (decoded) {
         this.userId = decoded.userId
       }
-    }else{
+    } else {
       this.$router.push('/forbidden');
     }
 
@@ -91,29 +112,30 @@ export default {
   },
   methods: {
     getAreas(areaId) {
-      fetch(url+`/areas/${areaId}`, {
+      fetch(url + `/areas/${areaId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer " + localStorage.getItem('token'),
         },
       })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Erreur lors de la récupération des détails de la zone');
-          }
-          return response.json();
-        })
-        .then(data => {
-          this.name = data.name;
-          this.longitude = data.lon;
-          this.latitude = data.lat;
-          this.description = data.description;
-          this.directions = data.gettingThere;
-        })
-        .catch(error => {
-          console.error(error);
-        });
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Erreur lors de la récupération des détails de la zone');
+            }
+            return response.json();
+          })
+          .then(data => {
+            this.area = data;
+            this.name = data.name;
+            this.longitude = data.lon;
+            this.latitude = data.lat;
+            this.description = data.description;
+            this.directions = data.gettingThere;
+          })
+          .catch(error => {
+            console.error(error);
+          });
     },
     submitForm() {
       const currentPath = window.location.pathname;
@@ -141,7 +163,7 @@ export default {
       }
     },
     createArea() {
-      fetch(url+'/areas/', {
+      fetch(url + '/areas/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -155,20 +177,20 @@ export default {
           user: this.userId
         })
       })
-        .then(response => {
-          if (response.ok) {
-            this.showFeedback('Lieu créé avec succès.', 'alert-success');
-            this.$router.push('/profile');
-          } else {
-            throw new Error('Erreur lors de la création du lieu.');
-          }
-        })
-        .catch(error => {
-          this.showFeedback(error.message, 'alert-danger');
-        });
+          .then(response => {
+            if (response.ok) {
+              this.showFeedback('Lieu créé avec succès.', 'alert-success');
+              this.$router.push('/profile');
+            } else {
+              throw new Error('Erreur lors de la création du lieu.');
+            }
+          })
+          .catch(error => {
+            this.showFeedback(error.message, 'alert-danger');
+          });
     },
     updateRoute(areaId) {
-      fetch(url+`/areas/${areaId}`, {
+      fetch(url + `/areas/${areaId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -181,17 +203,17 @@ export default {
           lat: this.latitude
         })
       })
-        .then(response => {
-          if (response.ok) {
-            this.showFeedback('Lieu modifié avec succès.', 'alert-success');
-            this.$router.push('/profile');
-          } else {
-            throw new Error('Erreur lors de la modification du lieu.');
-          }
-        })
-        .catch(error => {
-          this.showFeedback(error.message, 'alert-danger');
-        });
+          .then(response => {
+            if (response.ok) {
+              this.showFeedback('Lieu modifié avec succès.', 'alert-success');
+              this.$router.push('/profile');
+            } else {
+              throw new Error('Erreur lors de la modification du lieu.');
+            }
+          })
+          .catch(error => {
+            this.showFeedback(error.message, 'alert-danger');
+          });
     },
     showFeedback(message, cssClass) {
       this.feedbackMessage = message;

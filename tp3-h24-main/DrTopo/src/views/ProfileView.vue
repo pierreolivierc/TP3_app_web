@@ -55,8 +55,7 @@ export default {
     else{
       this.$router.push('/forbidden');
     }
-  },
-  mounted() {
+
     this.getUserAreas(this.user.id);
     this.getUserRoutes(this.user.id);
   },
