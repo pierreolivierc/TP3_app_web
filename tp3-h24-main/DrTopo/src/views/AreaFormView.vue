@@ -45,6 +45,7 @@
 
 <script>
 import { jwtDecode } from 'jwt-decode';
+const url = import.meta.env.VITE_URL
 export default {
   data() {
     return {
@@ -90,7 +91,7 @@ export default {
   },
   methods: {
     getAreas(areaId) {
-      fetch(process.env.URL+`/areas/${areaId}`, {
+      fetch(url+`/areas/${areaId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -140,7 +141,7 @@ export default {
       }
     },
     createArea() {
-      fetch(process.env.URL+'/areas/', {
+      fetch(url+'/areas/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -167,7 +168,7 @@ export default {
         });
     },
     updateRoute(areaId) {
-      fetch(process.env.URL+`/areas/${areaId}`, {
+      fetch(url+`/areas/${areaId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

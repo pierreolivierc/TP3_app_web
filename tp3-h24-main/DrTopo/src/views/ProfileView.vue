@@ -33,6 +33,7 @@
 
 <script>
 import { jwtDecode } from 'jwt-decode';
+const url = import.meta.env.VITE_URL
 export default {
   data() {
     return {
@@ -61,7 +62,7 @@ export default {
   },
   methods: {
     getUserAreas(userId) {
-      fetch(`http://localhost:3000/areas/my-areas/${userId}`, {
+      fetch(url+`/areas/my-areas/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +84,7 @@ export default {
       });
     },
     getUserRoutes(userId) {
-      fetch(`http://localhost:3000/routes/my-routes/${userId}`, {
+      fetch(url+`/routes/my-routes/${userId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -104,7 +105,7 @@ export default {
       });
     },
     deleteArea(areaId) {
-      fetch(`http://localhost:3000/areas/${areaId}`, {
+      fetch(url+`/areas/${areaId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -123,7 +124,7 @@ export default {
       });
     },
     deleteRoute(routeId) {
-      fetch(`http://localhost:3000/routes/${routeId}`, {
+      fetch(url+`/routes/${routeId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

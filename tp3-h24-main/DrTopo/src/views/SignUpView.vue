@@ -33,6 +33,7 @@
 
 
 <script>
+const url = import.meta.env.VITE_URL
 export default {
   name: "SignUpView",
   data() {
@@ -86,7 +87,7 @@ export default {
     },
     submitForm() {
       if (this.validateForm()) {
-        fetch('http://localhost:3000/users', {
+        fetch(url+'/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

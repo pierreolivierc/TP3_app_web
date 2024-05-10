@@ -21,6 +21,7 @@
 </template>
 
 <script>
+const url = import.meta.env.VITE_URL
 export default {
   name: "SignIn",
   data: () => {
@@ -32,7 +33,7 @@ export default {
   },
   methods: {
     login() {
-      fetch("http://localhost:3000/signIn", {
+      fetch(url+"/signIn", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

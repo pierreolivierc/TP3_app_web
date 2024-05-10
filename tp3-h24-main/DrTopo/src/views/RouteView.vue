@@ -21,6 +21,7 @@
 </template>
 
 <script>
+const url = import.meta.env.VITE_URL
 export default {
   data() {
     return {
@@ -36,7 +37,7 @@ export default {
   },
   methods: {
     getRoute(routeId) {
-      fetch(`http://localhost:3000/routes/${routeId}`, {
+      fetch(url+`/routes/${routeId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

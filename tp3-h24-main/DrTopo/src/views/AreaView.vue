@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     getArea(areaId) {
-      fetch(`http://localhost:3000/areas/${areaId}`, {
+      fetch(import.meta.env.VITE_URL+`/areas/${areaId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -65,17 +65,15 @@ export default {
       });
     },
     showMap(lon, lat) {
-      // Créer une carte Leaflet
+
       const map = L.map('map').setView([lat, lon], 13);
 
-      // Ajouter une couche de tuile OpenStreetMap
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
 
-      // Ajouter un marqueur à l'emplacement spécifié
       L.marker([lat, lon]).addTo(map)
-        .bindPopup(this.area.name) // Ajouter un popup avec le nom de l'area
+        .bindPopup(this.area.name)
         .openPopup();
     }
   }

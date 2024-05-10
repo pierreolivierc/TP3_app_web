@@ -73,6 +73,7 @@
 </template>
 
 <script>
+const url = import.meta.env.VITE_URL
 export default {
   name: "IndexView",
   data() {
@@ -113,7 +114,7 @@ export default {
       this.selectedMaxDifficulty = event.target.value;
     },
     getAreas() {
-      fetch("http://localhost:3000/areas/", {
+      fetch(url+"/areas/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -137,7 +138,7 @@ export default {
       }
 
       // Si tous les champs sont remplis, procédez à la requête
-      fetch(`http://localhost:3000/routes/?type=${this.selectedType}&minDifficulty=${this.selectedMinDifficulty}&maxDifficulty=${this.selectedMaxDifficulty}&location=${this.selectedLocation}`, {
+      fetch(url+`/routes/?type=${this.selectedType}&minDifficulty=${this.selectedMinDifficulty}&maxDifficulty=${this.selectedMaxDifficulty}&location=${this.selectedLocation}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

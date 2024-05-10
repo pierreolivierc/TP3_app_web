@@ -50,6 +50,7 @@
 
 <script>
 import {jwtDecode} from 'jwt-decode';
+const url = import.meta.env.VITE_URL
 
 export default {
   data() {
@@ -133,7 +134,7 @@ export default {
       console.log(this.grade)
     },
     getAreas() {
-      fetch("http://localhost:3000/areas/", {
+      fetch(url+"/areas/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -149,7 +150,7 @@ export default {
           });
     },
     getRoutes(areaId) {
-      fetch(`http://localhost:3000/routes/${areaId}`, {
+      fetch(url+`/routes/${areaId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -181,7 +182,7 @@ export default {
     updateArea(routeId) {
       // if (this.validateForm()) {
       console.log(this.areaId)
-      fetch(`http://localhost:3000/routes/${routeId}`, {
+      fetch(url+`/routes/${routeId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -206,7 +207,7 @@ export default {
     },
     createArea() {
       // if (this.validateForm()) {
-      fetch('http://localhost:3000/routes/', {
+      fetch(url+'/routes/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

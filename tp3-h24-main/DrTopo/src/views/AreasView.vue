@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     getAreas() {
-      fetch("http://localhost:3000/areas/", {
+      fetch(import.meta.env.VITE_URL+"/areas/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
