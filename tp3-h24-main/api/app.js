@@ -63,20 +63,13 @@ app.use(function (err, req, res, next) {
 });	
 
 
-// mongoose
-// 	.connect(process.env.DATA_BASE)
-// 	.then(() => {
-// 		app.listen(3000, () => {
-// 			console.log("Node.js est à l'écoute sur http://localhost:%s ", process.env.PORT);
-// 		});
-// 	})
-// 	.catch(err => console.log(err));
-
 mongoose
-	.connect("mongodb://127.0.0.1:27017/DrTopo")
-	.then(() => {
-		app.listen(port);
-		console.log("Serveur à l'écoute sur : http://localhost:" + port);
-	});
+	.connect(process.env.DATA_BASE)
+    .then(() => {
+        app.listen(3000, () => {
+            console.log("Node.js est à l'écoute sur http://localhost:%s ", process.env.PORT);
+        });
+    })
+    .catch(err => console.log(err));
 
 module.exports = app;
