@@ -1,0 +1,1105 @@
+{
+	"info": {
+		"_postman_id": "dc0494c5-1fad-4c28-9fff-ccea5fbf9ab1",
+		"name": "DrTopo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30894611"
+	},
+	"item": [
+		{
+			"name": "seed",
+			"item": [
+				{
+					"name": "db/seed",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//Pour enregistrer les valeurs initiales. \r",
+									"//Exécuter la première fois pour lorsque current value = initial value\r",
+									"//pm.collectionVariables.set(\"reset_values\",pm.collectionVariables.toJSON().values)\r",
+									"\r",
+									"pm.collectionVariables.get(\"reset_values\").forEach((a)=>{\r",
+									"    if(a.key != \"reset_values\" ){\r",
+									"          pm.collectionVariables.set(a.key,a.value)}\r",
+									"    }\r",
+									"  \r",
+									");\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"maxRedirects": 50
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/db/seed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"db",
+								"seed"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"});\r",
+									"\r",
+									"// Récupération des données au format JSON\r",
+									"const user = pm.response.json().user; \r",
+									"console.log(user);\r",
+									"\r",
+									"// Test : l'objet user possède bien toutes les propriétés\r",
+									"pm.test(\"L'objet user possède toutes les propriétés\", () => {\r",
+									"    pm.expect(user).to.be.an(\"object\").that.has.all.keys(\"_id\", \"username\", \"email\", \"password\", \"__v\", \"createdAt\", \"updatedAt\");\r",
+									"});\r",
+									"\r",
+									"// Test : L'utilisateur a-t-il un ID ?\r",
+									"pm.test(\"L'utilisateur a un ID\", function () {\r",
+									"    pm.expect(user._id).to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"// Test : Le champ \"email\" est un courriel valide\r",
+									"pm.test(\"Le champ email est un courriel valide\", function () {\r",
+									"    const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\r",
+									"    pm.expect(emailPattern.test(user.email)).to.be.true;\r",
+									"});\r",
+									"\r",
+									"// Test : Le champ \"password\" doit contenir un minimum de 6 caractères\r",
+									"pm.test(\"Le champ password doit contenir un minimum de 6 caractères\", function () {\r",
+									"    pm.expect(user.password.length).to.be.at.least(6);\r",
+									"});\r",
+									"\r",
+									"// Test : Le champ \"createdAt\" existe et est une date valide\r",
+									"pm.test(\"Le champ createdAt existe et est une date valide\", function () {\r",
+									"    pm.expect(user.createdAt).to.match(/\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}Z/);\r",
+									"});\r",
+									"\r",
+									"// Test : Le champ \"updatedAt\" existe et est une date valide\r",
+									"pm.test(\"Le champ updatedAt existe et est une date valide\", function () {\r",
+									"    pm.expect(user.updatedAt).to.match(/\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}Z/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"User1\",\r\n    \"email\": \"user1@gmail.com\",\r\n    \"password\": \"123qwe\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/signIn/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"signIn",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth (user inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test : Erreur 404 - Utilisateur non trouvé\r",
+									"pm.test(\"Error 404 - Utilisateur non trouvé\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"sweet\",\r\n    \"email\": \"home@gmail.com\",\r\n    \"password\": \"alabama\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/signIn/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"signIn",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth (mauvais mot de passe)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test : Erreur 401 - Mauvais mot de passe\r",
+									"pm.test(\"Error 401 - Mauvais mot de passe\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(401);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"User1\",\r\n    \"email\": \"user1@gmail.com\",\r\n    \"password\": \"motdepasse\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/signIn/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"signIn",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "routes",
+			"item": [
+				{
+					"name": "route",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test : Vérifier le statut de la réponse\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"// Test : Vérifier le type de contenu de la réponse\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"});\r",
+									"\r",
+									"// Récupérer les données de la route au format JSON\r",
+									"const route = pm.response.json();\r",
+									"console.log(route)\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"const jsonSchemaRoute = JSON.parse(pm.collectionVariables.get(\"jsonSchemaRoute\"));\r",
+									"\r",
+									"// Test : L'objet route possède bien toutes les propriétés nécessaires\r",
+									"pm.test(\"L'objet route possède toutes les propriétés\", () => {\r",
+									"    pm.expect(route).to.be.an(\"object\").that.has.all.keys(\"_id\", \"name\", \"type\", \"grade\", \"description\", \"approach\", \"descent\", \"area\", \"user\", \"__v\", \"createdAt\", \"updatedAt\");\r",
+									"});\r",
+									"\r",
+									"// Test : La route a-t-elle un ID ?\r",
+									"pm.test(\"La route a un ID\", function () {\r",
+									"    pm.expect(route._id).to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"// Test : Vérifier si l'ID de la zone (area) est une chaîne non vide\r",
+									"pm.test(\"L'ID de la zone (area) est une chaîne non vide\", function () {\r",
+									"    pm.expect(route.area).to.be.a('string').that.is.not.empty;\r",
+									"});\r",
+									"\r",
+									"// Test : Vérifier si l'ID de l'utilisateur (user) est une chaîne non vide\r",
+									"pm.test(\"L'ID de l'utilisateur (user) est une chaîne non vide\", function () {\r",
+									"    pm.expect(route.user).to.be.a('string').that.is.not.empty;\r",
+									"});\r",
+									"\r",
+									"// Test : Vérifier si la description est une chaîne non vide\r",
+									"pm.test(\"La description est une chaîne non vide\", function () {\r",
+									"    pm.expect(route.description).to.be.a('string').that.is.not.empty;\r",
+									"});\r",
+									"\r",
+									"// Test : Vérifier si le grade est bien un objet avec les clés \"text\" et \"value\"\r",
+									"pm.test(\"Le grade est un objet avec les clés 'text' et 'value'\", function () {\r",
+									"    pm.expect(route.grade).to.be.an('object').that.has.all.keys(\"text\", \"value\");\r",
+									"});\r",
+									"\r",
+									"// Test : Vérifier si l'ID de la zone (area) est un ID valide\r",
+									"pm.test(\"L'ID de la zone (area) est un ID valide\", function () {\r",
+									"    pm.expect(route.area).to.match(/^[0-9a-fA-F]{24}$/);\r",
+									"});\r",
+									"\r",
+									"// Test : Vérifier si l'ID de l'utilisateur (user) est un ID valide\r",
+									"pm.test(\"L'ID de l'utilisateur (user) est un ID valide\", function () {\r",
+									"    pm.expect(route.user).to.match(/^[0-9a-fA-F]{24}$/);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"// Modification des variables de collection\r",
+									"pm.collectionVariables.set(\"id_last_route_created\", route._id.toString());\r",
+									"pm.collectionVariables.set(\"id_last_area_used\", route.area.toString());\r",
+									"pm.collectionVariables.set(\"id_last_user_used\", route.user.toString());\r",
+									"pm.collectionVariables.set(\"last_route_created\", JSON.stringify(route));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"route\",\r\n    \"type\": \"SPORT\",\r\n    \"grade\": {\"text\": \"5.1\", \"value\": \"5.01\"},\r\n    \"description\": \"un message\",\r\n    \"approach\": \"un message 2\",\r\n    \"descent\": \"un message 3\",\r\n    \"areaId\": \"66351a737f9834d3472ddf81\",\r\n    \"userId\": \"66351a737f9834d3472ddf73\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/routes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "route (user inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Test code de retour\r",
+									"pm.test(\"Status code is 422\", function () {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"yo\",\r\n    \"type\": \"SPORT\",\r\n    \"grade\": {\"text\": \"5.1\", \"value\": \"5.01\"},\r\n    \"description\": \"un message\",\r\n    \"approach\": \"un message 2\",\r\n    \"descent\": \"un message 3\",\r\n    \"areaId\": \"66351a737f9834d3472ddf81\",\r\n    \"userId\": \"{{id_none_existent}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/routes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "route (area inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Test code de retour\r",
+									"pm.test(\"Status code is 422\", function () {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"route\",\r\n    \"type\": \"SPORT\",\r\n    \"grade\": {\"text\": \"5.1\", \"value\": \"5.01\"},\r\n    \"description\": \"un message\",\r\n    \"approach\": \"un message 2\",\r\n    \"descent\": \"un message 3\",\r\n    \"areaId\": \"{{id_none_existent}}\",\r\n    \"userId\": \"66351a737f9834d3472ddf73\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/routes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "routes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test: Vérifier le statut de la réponse\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Test: Vérifier le type de contenu de la réponse\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.include('application/json');\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.include('charset=utf-8');\r",
+									"});\r",
+									"\r",
+									"// Récupération des données des routes au format JSON\r",
+									"const routes = pm.response.json();\r",
+									"console.log(routes);\r",
+									"\r",
+									"// Test: Vérifier que les données des routes sont retournées sous forme de tableau (array)\r",
+									"pm.test(\"Les données des routes sont retournées sous forme de tableau (array)\", function () {\r",
+									"    pm.expect(routes).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"// Test: Vérifier que chaque élément du tableau contient les clés rel, method et href\r",
+									"pm.test(\"Chaque élément du tableau contient les clés rel, method et href\", function () {\r",
+									"    pm.expect(routes.every(route => route.rel && route.method && route.href)).to.be.true;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "routes/user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test: Vérifier le statut de la réponse\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Test: Vérifier le type de contenu de la réponse\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.include('application/json');\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.include('charset=utf-8');\r",
+									"});\r",
+									"\r",
+									"// Récupération des données des routes de l'utilisateur au format JSON\r",
+									"const userRoutes = pm.response.json();\r",
+									"console.log(userRoutes);\r",
+									"\r",
+									"// Test: Les données des routes de l'utilisateur sont retournées sous forme de tableau (array)\r",
+									"pm.test(\"Les données des routes de l'utilisateur sont retournées sous forme de tableau (array)\", function () {\r",
+									"    pm.expect(userRoutes).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"// Test: Vérifier que chaque élément du tableau contient les clés rel, method et href\r",
+									"pm.test(\"Chaque élément du tableau contient les clés rel, method et href\", function () {\r",
+									"    pm.expect(userRoutes.every(route => route.links && Array.isArray(route.links))).to.be.true;\r",
+									"    pm.expect(userRoutes.every(route => route.links.every(link => link.rel && link.method && link.href))).to.be.true;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routes/my-routes/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes",
+								"my-routes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_user_used}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "routes/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test: Vérifier le statut de la réponse\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Test: Vérifier le type de contenu de la réponse\r",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.include('application/json');\r",
+									"    pm.expect(pm.response.headers.get('content-type')).to.include('charset=utf-8');\r",
+									"});\r",
+									"\r",
+									"// Récupération des données de la route au format JSON\r",
+									"const route = pm.response.json();\r",
+									"console.log(route);\r",
+									"\r",
+									"// Test: Les données de la route sont retournées sous forme d'un objet\r",
+									"pm.test(\"Les données de la route sont retournées sous forme d'un objet\", function () {\r",
+									"    pm.expect(route).to.be.an(\"object\");\r",
+									"});\r",
+									"\r",
+									"// Test: Vérifier si la route contient toutes les propriétés attendues\r",
+									"pm.test(\"La route contient toutes les propriétés attendues\", function () {\r",
+									"    pm.expect(route).to.have.all.keys(\"_id\", \"name\", \"type\", \"grade\", \"description\", \"approach\", \"descent\", \"area\", \"user\", \"__v\", \"createdAt\", \"updatedAt\", \"links\");\r",
+									"});\r",
+									"\r",
+									"// Test: Vérifier que la route contient les liens attendus\r",
+									"pm.test(\"La route contient les liens attendus\", function () {\r",
+									"    pm.expect(route.links).to.be.an(\"array\").that.is.not.empty;\r",
+									"    route.links.forEach(link => {\r",
+									"        pm.expect(link).to.have.all.keys(\"rel\", \"method\", \"href\");\r",
+									"        pm.expect(link.rel).to.be.oneOf([\"self\", \"delete\", \"update\"]);\r",
+									"        pm.expect(link.method).to.be.oneOf([\"GET\", \"DELETE\", \"PUT\"]);\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routes/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_route_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "routes/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test : Vérifier le statut de la réponse",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test : Vérifier le type de contenu de la réponse",
+									"pm.test(\"Content-type header est application/json et utf-8\", () => {",
+									"    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');",
+									"});",
+									"",
+									"// Récupération des données de la route mise à jour au format JSON",
+									"const updatedRoute = pm.response.json();",
+									"console.log(updatedRoute);",
+									"",
+									"// Chargement du schéma de données JSON à partir de l'environnement.",
+									"const jsonSchemaRoute = JSON.parse(pm.collectionVariables.get(\"jsonSchemaRoute\"));",
+									"",
+									"// Validation selon le schéma de données JSON.",
+									"pm.test(\"JSON respecte le schéma pour une route\", () => {",
+									"    pm.response.to.have.jsonSchema(jsonSchemaRoute);",
+									"});",
+									"",
+									"// Test : Vérifier si la route mise à jour contient toutes les propriétés attendues",
+									"pm.test(\"La route mise à jour contient toutes les propriétés attendues\", function () {",
+									"    pm.expect(updatedRoute).to.have.all.keys(\"_id\", \"name\", \"type\", \"grade\", \"description\", \"approach\", \"descent\", \"area\", \"user\", \"__v\", \"createdAt\", \"updatedAt\");",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"routeur\",\r\n    \"type\": \"SPORT\",\r\n    \"grade\": {\"text\": \"5.1\", \"value\": \"5.01\"},\r\n    \"description\": \"un nouveau message\",\r\n    \"approach\": \"un nouveau message 2\",\r\n    \"descent\": \"un nouveau message 3\",\r\n    \"areaId\": \"{{id_last_area_used}}\",\r\n    \"userId\": \"{{id_last_user_used}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/routes/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_route_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "routes/:id (inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Test code de retour\r",
+									"pm.test(\"Status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"routeur\",\r\n    \"type\": \"SPORT\",\r\n    \"grade\": {\"text\": \"5.1\", \"value\": \"5.01\"},\r\n    \"description\": \"un nouveau message\",\r\n    \"approach\": \"un nouveau message 2\",\r\n    \"descent\": \"un nouveau message 3\",\r\n    \"areaId\": \"{{id_last_area_used}}\",\r\n    \"userId\": \"{{id_last_user_used}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/routes/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_none_existent}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "routes/:id (user inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Test code de retour\r",
+									"pm.test(\"Status code is 422\", function () {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"yo\",\r\n    \"type\": \"SPORT\",\r\n    \"grade\": {\"text\": \"5.1\", \"value\": \"5.01\"},\r\n    \"description\": \"un message\",\r\n    \"approach\": \"un message 2\",\r\n    \"descent\": \"un message 3\",\r\n    \"areaId\": \"66351a737f9834d3472ddf81\",\r\n    \"userId\": \"{{id_none_existent}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/routes/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "routes/:id (area inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Test code de retour\r",
+									"pm.test(\"Status code is 422\", function () {\r",
+									"    pm.response.to.have.status(422);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"route\",\r\n    \"type\": \"SPORT\",\r\n    \"grade\": {\"text\": \"5.1\", \"value\": \"5.01\"},\r\n    \"description\": \"un message\",\r\n    \"approach\": \"un message 2\",\r\n    \"descent\": \"un message 3\",\r\n    \"areaId\": \"{{id_none_existent}}\",\r\n    \"userId\": \"66351a737f9834d3472ddf73\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/routes/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "routes/:id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routes/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_last_route_created}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "routes/:id (inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 204\", function () {\r",
+									"    pm.response.to.have.status(204);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/routes/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"routes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{id_none_existent}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users/:userId (inexistant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Test code de retour\r",
+									"//pm.test(\"Status code is 404\", function () {\r",
+									" //   pm.response.to.have.status(404);\r",
+									"//});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:userId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users/:userId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Test code dee retour\r",
+									"//pm.test(\"Status code is 200\", function () {\r",
+									"//    pm.response.to.have.status(200);\r",
+									"//});\r",
+									"\r",
+									"//Test header\r",
+									"//pm.test(\"Content-type header est application/json et utf-8\", () => {\r",
+									"//    pm.expect(pm.response.headers.get('content-type')).to.eql('application/json; charset=utf-8');\r",
+									"//});\r",
+									"\r",
+									"//récupération des données au format json\r",
+									"//const user = pm.response.json();\r",
+									"\r",
+									"// Chargement du schéma de données JSON à partir de l'environnement.\r",
+									"//const jsonSchemaUser = JSON.parse(pm.collectionVariables.get(\"jsonSchemaUser\"));\r",
+									"\r",
+									"//Test :  Validation selon le schéma de données JSON.\r",
+									"//pm.test(\"JSON respecte le schéma pour un user\", () => {\r",
+									"//    pm.response.to.have.jsonSchema(jsonSchemaUser);\r",
+									"\r",
+									"//});\r",
+									"\r",
+									"//Test : Vérifie si les données retournées sont les bonnes\r",
+									"//pm.test(\"JSON contient les bonnes valeurs\", () =>{\r",
+									"//    const last_user_created = JSON.parse(pm.collectionVariables.get(\"last_user_created\"))\r",
+									"\r",
+									"    //email\r",
+									"//    pm.expect(user.email).to.be.equal(last_user_created.email);\r",
+									"\r",
+									"     //password\r",
+									"//    pm.expect(user.password).to.be.equal(last_user_created.password);\r",
+									"\r",
+									"  \r",
+									"//})\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:userId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "area",
+			"item": [
+				{
+					"name": "areas/",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/areas/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"areas",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "reset_values",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "id_last_route_created",
+			"value": ""
+		},
+		{
+			"key": "last_route_created",
+			"value": ""
+		},
+		{
+			"key": "id_last_user_used",
+			"value": ""
+		},
+		{
+			"key": "id_last_area_used",
+			"value": ""
+		},
+		{
+			"key": "jsonSchemaRoute",
+			"value": "{\n    \"type\": \"object\",\n    \"properties\": {\n        \"_id\": {\n            \"type\": \"string\",\n            \"pattern\": \"^[0-9a-fA-F]{24}$\"\n        },\n        \"name\": {\n            \"type\": \"string\"\n        },\n        \"type\": {\n            \"type\": \"string\",\n            \"enum\": [\"SPORT\", \"TRAD\", \"TOPROPE\"]\n        },\n        \"grade\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"text\": {\n                    \"type\": \"string\"\n                },\n                \"value\": {\n                    \"type\": \"number\"\n                }\n            },\n            \"required\": [\"text\", \"value\"]\n        },\n        \"description\": {\n            \"type\": \"string\"\n        },\n        \"approach\": {\n            \"type\": \"string\"\n        },\n        \"descent\": {\n            \"type\": \"string\"\n        },\n        \"area\": {\n            \"type\": \"string\",\n            \"pattern\": \"^[0-9a-fA-F]{24}$\"\n        },\n        \"user\": {\n            \"type\": \"string\",\n            \"pattern\": \"^[0-9a-fA-F]{24}$\"\n        },\n        \"createdAt\": {\n            \"type\": \"string\"\n        },\n        \"updatedAt\": {\n            \"type\": \"string\"\n        },\n        \"__v\": {\n            \"type\": \"number\"\n        }\n    },\n    \"required\": [\"name\", \"type\", \"grade\", \"description\", \"area\", \"user\"]\n}\n",
+			"type": "string"
+		},
+		{
+			"key": "id_none_existent",
+			"value": "99351a737f9834d3472ddf81",
+			"type": "string"
+		}
+	]
+}
